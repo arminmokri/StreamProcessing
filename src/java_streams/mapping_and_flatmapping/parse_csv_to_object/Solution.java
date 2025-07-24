@@ -12,28 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class Solution {
 
-    static class Employee {
-        private final long id;
-        private final String name;
-        private final float salary;
-
-        public Employee(long id, String name, float salary) {
-            this.id = id;
-            this.name = name;
-            this.salary = salary;
-        }
-
-        public long getId() {
-            return id;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public float getSalary() {
-            return salary;
-        }
+    record Employee(long id, String name, float salary) {
 
         @Override
         public boolean equals(Object o) {
@@ -43,10 +22,6 @@ public class Solution {
             return id == employee.id && Float.compare(employee.salary, salary) == 0 && Objects.equals(name, employee.name);
         }
 
-        @Override
-        public int hashCode() {
-            return Objects.hash(id, name, salary);
-        }
     }
 
     public List<Employee> parseCSVToObject(List<String> list) {

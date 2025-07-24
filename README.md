@@ -29,11 +29,11 @@ This repository provides categorized, real-world examples of **stream processing
 #### 5- [Reduce to Concatenate](src/java_streams/reduction_and_aggregation/reduce_to_concatenate) 🔗
 
 ### 4. Collectors & Conversions
-#### 1- [To Map](src/java_streams/collectors/to_map) 🗺️❌
-#### 2- [Join Names](src/java_streams/collectors/join_names) 🔗❌
-#### 3- [Group By Field](src/java_streams/collectors/group_by) 🧩❌
-#### 4- [Partitioning By Predicate](src/java_streams/collectors/partitioning) 🎭❌
-#### 5- [To Set](src/java_streams/collectors/to_set) 🧺❌
+#### 1- [Collect To Map](src/java_streams/collectors_and_conversions/collect_to_map) 🗺️
+#### 2- [Join Names](src/java_streams/collectors_and_conversions/join_names) 🔗
+#### 3- [Group By Field](src/java_streams/collectors_and_conversions/group_by_field) 🧩
+#### 4- [Count Grouped](src/java_streams/collectors_and_conversions/count_grouped) 🎭
+#### 5- [Collect To Set](src/java_streams/collectors_and_conversions/collect_to_set) 🧺
 
 ### 5. Sorting
 #### 1- [Sort by Salary](src/java_streams/sorting/sort_salary) 💸❌
