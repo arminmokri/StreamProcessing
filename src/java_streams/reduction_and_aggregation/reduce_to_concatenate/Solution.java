@@ -12,7 +12,7 @@ public class Solution {
 
     public String reduceToConcatenate(List<String> list) {
         return list.stream()
-                .reduce((s, s2) -> s + s2)
+                .reduce((s1, s2) -> s1 + s2)
                 .orElse("");
     }
 }

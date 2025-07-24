@@ -43,11 +43,11 @@ This repository provides categorized, real-world examples of **stream processing
 #### 5- [Sort Custom Objects](src/java_streams/sorting/sort_custom_objects) 🛠️
 
 ### 6. Advanced Transformations
-#### 1- [Filter + Map + Reduce](src/java_streams/advanced/filter_map_reduce) 🧠❌
-#### 2- [Top N Elements](src/java_streams/advanced/top_n) 🥇❌
-#### 3- [Nested Grouping](src/java_streams/advanced/nested_grouping) 🗂️❌
-#### 4- [Sliding Window Simulation](src/java_streams/advanced/sliding_window) ⏳❌
-#### 5- [Distinct and Sorted](src/java_streams/advanced/distinct_sorted) ✨❌
+#### 1- [Filter + Map + Reduce](src/java_streams/advanced_transformations/filter_map_reduce) 🧠
+#### 2- [Top N Elements](src/java_streams/advanced_transformations/top_n_elements) 🥇
+#### 3- [Nested Grouping](src/java_streams/advanced_transformations/nested_grouping) 🗂️
+#### 4- [Sliding Window Simulation](src/java_streams/advanced_transformations/sliding_window_simulation) ⏳
+#### 5- [Distinct and Sorted](src/java_streams/advanced_transformations/distinct_and_sorted) ✨
 
 ### 7. Parallel Streams
 #### 1- [Parallel Sum](src/java_streams/parallel/parallel_sum) ⚡❌
