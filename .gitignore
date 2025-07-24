@@ -25,4 +25,5 @@ replay_pid*
 
 # Idea
 .idea/
-
+StreamProcessing.iml
+out/

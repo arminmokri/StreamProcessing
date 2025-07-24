@@ -8,109 +8,109 @@ This repository provides categorized, real-world examples of **stream processing
 ## Java Streams
 
 ### 1. Basic Stream Operations
-#### 1- [Filter Even Numbers](src/java/basic/filter_even) 🔍❌
-#### 2- [Find First Match](src/java/basic/find_first) 🕵️❌
-#### 3- [ForEach Print](src/java/basic/foreach_print) 🖨️❌
-#### 4- [Distinct Elements](src/java/basic/distinct_elements) 🆔❌
-#### 5- [Skip and Limit](src/java/basic/skip_limit) ⏭️❌
+#### 1- [Filter Even Numbers](src/java_streams/basic_stream_operations/filter_even_numbers) 🔍
+#### 2- [Find First Match](src/java_streams/basic_stream_operations/find_first_match) 🕵️
+#### 3- [ForEach Print](src/java_streams/basic_stream_operations/foreach_print) 🖨️
+#### 4- [Distinct Elements](src/java_streams/basic_stream_operations/distinct_elements) 🆔
+#### 5- [Skip and Limit](src/java_streams/basic_stream_operations/skip_and_limit) ⏭️
 
 ### 2. Mapping & FlatMapping
-#### 1- [Map to Lengths](src/java/mapping/map_lengths) 🗺️❌
-#### 2- [FlatMap Nested Lists](src/java/mapping/flatmap_nested) 📚❌
-#### 3- [Parse CSV to Object](src/java/mapping/parse_csv) 📄❌
-#### 4- [Map to Uppercase](src/java/mapping/map_uppercase) 🔠❌
-#### 5- [FlatMap Optional](src/java/mapping/flatmap_optional) ❓❌
+#### 1- [Map to Lengths](src/java_streams/mapping_and_flatmapping/map_to_lengths) 🗺️
+#### 2- [FlatMap Nested Lists](src/java_streams/mapping_and_flatmapping/flatmap_nested_lists) 📚
+#### 3- [Parse CSV to Object](src/java_streams/mapping_and_flatmapping/parse_csv_to_object) 📄
+#### 4- [Map to Uppercase](src/java_streams/mapping_and_flatmapping/map_to_uppercase) 🔠
+#### 5- [FlatMap Optional](src/java_streams/mapping_and_flatmapping/flatmap_optional) ❓
 
 ### 3. Reduction & Aggregation
-#### 1- [Sum Integers](src/java/reduction/sum_integers) ➕❌
-#### 2- [Average Salary](src/java/reduction/avg_salary) 📊❌
-#### 3- [Find Max Salary](src/java/reduction/max_salary) 🏆❌
-#### 4- [Count Elements](src/java/reduction/count_elements) 🔢❌
-#### 5- [Reduce to Concatenate](src/java/reduction/reduce_concat) 🔗❌
+#### 1- [Sum Integers](src/java_streams/reduction/sum_integers) ➕❌
+#### 2- [Average Salary](src/java_streams/reduction/avg_salary) 📊❌
+#### 3- [Find Max Salary](src/java_streams/reduction/max_salary) 🏆❌
+#### 4- [Count Elements](src/java_streams/reduction/count_elements) 🔢❌
+#### 5- [Reduce to Concatenate](src/java_streams/reduction/reduce_concat) 🔗❌
 
 ### 4. Collectors & Conversions
-#### 1- [To Map](src/java/collectors/to_map) 🗺️❌
-#### 2- [Join Names](src/java/collectors/join_names) 🔗❌
-#### 3- [Group By Field](src/java/collectors/group_by) 🧩❌
-#### 4- [Partitioning By Predicate](src/java/collectors/partitioning) 🎭❌
-#### 5- [To Set](src/java/collectors/to_set) 🧺❌
+#### 1- [To Map](src/java_streams/collectors/to_map) 🗺️❌
+#### 2- [Join Names](src/java_streams/collectors/join_names) 🔗❌
+#### 3- [Group By Field](src/java_streams/collectors/group_by) 🧩❌
+#### 4- [Partitioning By Predicate](src/java_streams/collectors/partitioning) 🎭❌
+#### 5- [To Set](src/java_streams/collectors/to_set) 🧺❌
 
 ### 5. Sorting
-#### 1- [Sort by Salary](src/java/sorting/sort_salary) 💸❌
-#### 2- [Multi-field Sort](src/java/sorting/multi_sort) 🧮❌
-#### 3- [Reverse Sort](src/java/sorting/reverse_sort) 🔄❌
-#### 4- [Sort Strings Alphabetically](src/java/sorting/sort_strings) 🔤❌
-#### 5- [Sort Custom Objects](src/java/sorting/sort_custom) 🛠️❌
+#### 1- [Sort by Salary](src/java_streams/sorting/sort_salary) 💸❌
+#### 2- [Multi-field Sort](src/java_streams/sorting/multi_sort) 🧮❌
+#### 3- [Reverse Sort](src/java_streams/sorting/reverse_sort) 🔄❌
+#### 4- [Sort Strings Alphabetically](src/java_streams/sorting/sort_strings) 🔤❌
+#### 5- [Sort Custom Objects](src/java_streams/sorting/sort_custom) 🛠️❌
 
 ### 6. Advanced Transformations
-#### 1- [Filter + Map + Reduce](src/java/advanced/filter_map_reduce) 🧠❌
-#### 2- [Top N Elements](src/java/advanced/top_n) 🥇❌
-#### 3- [Nested Grouping](src/java/advanced/nested_grouping) 🗂️❌
-#### 4- [Sliding Window Simulation](src/java/advanced/sliding_window) ⏳❌
-#### 5- [Distinct and Sorted](src/java/advanced/distinct_sorted) ✨❌
+#### 1- [Filter + Map + Reduce](src/java_streams/advanced/filter_map_reduce) 🧠❌
+#### 2- [Top N Elements](src/java_streams/advanced/top_n) 🥇❌
+#### 3- [Nested Grouping](src/java_streams/advanced/nested_grouping) 🗂️❌
+#### 4- [Sliding Window Simulation](src/java_streams/advanced/sliding_window) ⏳❌
+#### 5- [Distinct and Sorted](src/java_streams/advanced/distinct_sorted) ✨❌
 
 ### 7. Parallel Streams
-#### 1- [Parallel Sum](src/java/parallel/parallel_sum) ⚡❌
-#### 2- [Compare Sequential vs Parallel](src/java/parallel/compare) 🆚❌
-#### 3- [Thread Safety](src/java/parallel/thread_safety) 🧵❌
-#### 4- [Parallel Filter and Collect](src/java/parallel/filter_collect) 🔍❌
-#### 5- [Performance Benchmark](src/java/parallel/benchmark) 🏁❌
+#### 1- [Parallel Sum](src/java_streams/parallel/parallel_sum) ⚡❌
+#### 2- [Compare Sequential vs Parallel](src/java_streams/parallel/compare) 🆚❌
+#### 3- [Thread Safety](src/java_streams/parallel/thread_safety) 🧵❌
+#### 4- [Parallel Filter and Collect](src/java_streams/parallel/filter_collect) 🔍❌
+#### 5- [Performance Benchmark](src/java_streams/parallel/benchmark) 🏁❌
 
 ### 8. Map Stream Operations
-#### 1- [Stream over Map Entries](src/java/map/entries_stream) 🗃️❌
-#### 2- [Sort Map by Value](src/java/map/sort_by_value) 📉❌
-#### 3- [Merge Maps](src/java/map/merge_maps) 🔀❌
-#### 4- [Filter Map by Key](src/java/map/filter_by_key) 🔑❌
-#### 5- [Collect Map to List](src/java/map/collect_to_list) 📋❌
+#### 1- [Stream over Map Entries](src/java_streams/map/entries_stream) 🗃️❌
+#### 2- [Sort Map by Value](src/java_streams/map/sort_by_value) 📉❌
+#### 3- [Merge Maps](src/java_streams/map/merge_maps) 🔀❌
+#### 4- [Filter Map by Key](src/java_streams/map/filter_by_key) 🔑❌
+#### 5- [Collect Map to List](src/java_streams/map/collect_to_list) 📋❌
 
 ### 9. Primitive Streams
-#### 1- [IntStream Range](src/java/primitives/range) 🔢❌
-#### 2- [Summary Statistics](src/java/primitives/stats) 📈❌
-#### 3- [Boxing/Unboxing](src/java/primitives/boxing) 📦❌
-#### 4- [DoubleStream Average](src/java/primitives/double_avg) 🎯❌
-#### 5- [LongStream Generate](src/java/primitives/long_generate) 🚀❌
+#### 1- [IntStream Range](src/java_streams/primitives/range) 🔢❌
+#### 2- [Summary Statistics](src/java_streams/primitives/stats) 📈❌
+#### 3- [Boxing/Unboxing](src/java_streams/primitives/boxing) 📦❌
+#### 4- [DoubleStream Average](src/java_streams/primitives/double_avg) 🎯❌
+#### 5- [LongStream Generate](src/java_streams/primitives/long_generate) 🚀❌
 
 ### 10. Exception Handling
-#### 1- [Handle ParseException](src/java/exceptions/parse_exception) 🚫❌
-#### 2- [Safe IO in Stream](src/java/exceptions/io_stream) 🧯❌
-#### 3- [Wrap Checked Exceptions](src/java/exceptions/wrapper) 🔁❌
-#### 4- [Log Exceptions in Stream](src/java/exceptions/log_exceptions) 📝❌
-#### 5- [Recover from Exceptions](src/java/exceptions/recover) 🔄❌
+#### 1- [Handle ParseException](src/java_streams/exceptions/parse_exception) 🚫❌
+#### 2- [Safe IO in Stream](src/java_streams/exceptions/io_stream) 🧯❌
+#### 3- [Wrap Checked Exceptions](src/java_streams/exceptions/wrapper) 🔁❌
+#### 4- [Log Exceptions in Stream](src/java_streams/exceptions/log_exceptions) 📝❌
+#### 5- [Recover from Exceptions](src/java_streams/exceptions/recover) 🔄❌
 
 ### 11. Custom Collectors
-#### 1- [Custom Collector for String Join](src/java/custom_collector/string_join) 🧵❌
-#### 2- [Collector to Summary Object](src/java/custom_collector/summary) 📦❌
-#### 3- [Collector with Downstream](src/java/custom_collector/downstream) 🌊❌
-#### 4- [Collector for Frequency Map](src/java/custom_collector/frequency_map) 📊❌
-#### 5- [Collector for Partitioned Lists](src/java/custom_collector/partition_lists) 🎭❌
+#### 1- [Custom Collector for String Join](src/java_streams/custom_collector/string_join) 🧵❌
+#### 2- [Collector to Summary Object](src/java_streams/custom_collector/summary) 📦❌
+#### 3- [Collector with Downstream](src/java_streams/custom_collector/downstream) 🌊❌
+#### 4- [Collector for Frequency Map](src/java_streams/custom_collector/frequency_map) 📊❌
+#### 5- [Collector for Partitioned Lists](src/java_streams/custom_collector/partition_lists) 🎭❌
 
 ### 12. Real-World Use Cases
-#### 1- [Group Books by Author](src/java/usecases/books_by_author) 📚❌
-#### 2- [Sum Orders per Customer](src/java/usecases/orders_sum) 🧾❌
-#### 3- [Filter Active Users](src/java/usecases/active_users) ✅❌
-#### 4- [Top Selling Products](src/java/usecases/top_selling_products) 🥇❌
-#### 5- [User Login Statistics](src/java/usecases/login_stats) 📊❌
+#### 1- [Group Books by Author](src/java_streams/usecases/books_by_author) 📚❌
+#### 2- [Sum Orders per Customer](src/java_streams/usecases/orders_sum) 🧾❌
+#### 3- [Filter Active Users](src/java_streams/usecases/active_users) ✅❌
+#### 4- [Top Selling Products](src/java_streams/usecases/top_selling_products) 🥇❌
+#### 5- [User Login Statistics](src/java_streams/usecases/login_stats) 📊❌
 
 ### 13. Optional Handling
-#### 1- [Optional from Find](src/java/optional/find_optional) ❓❌
-#### 2- [Default if Empty](src/java/optional/default) 🛡️❌
-#### 3- [Map Optional Values](src/java/optional/map_optional) 🔁❌
-#### 4- [Filter Optional](src/java/optional/filter_optional) 🔍❌
-#### 5- [FlatMap Optional](src/java/optional/flatmap_optional) 🔄❌
+#### 1- [Optional from Find](src/java_streams/optional/find_optional) ❓❌
+#### 2- [Default if Empty](src/java_streams/optional/default) 🛡️❌
+#### 3- [Map Optional Values](src/java_streams/optional/map_optional) 🔁❌
+#### 4- [Filter Optional](src/java_streams/optional/filter_optional) 🔍❌
+#### 5- [FlatMap Optional](src/java_streams/optional/flatmap_optional) 🔄❌
 
 ### 14. Debugging with Peek
-#### 1- [Peek Intermediate Values](src/java/debug/peek_debug) 🐞❌
-#### 2- [Log in Pipeline](src/java/debug/log_pipeline) 📝❌
-#### 3- [Side Effects](src/java/debug/side_effects) ⚠️❌
-#### 4- [Debug with Thread Info](src/java/debug/thread_info) 🧵❌
-#### 5- [Conditional Peek](src/java/debug/conditional_peek) 🔀❌
+#### 1- [Peek Intermediate Values](src/java_streams/debug/peek_debug) 🐞❌
+#### 2- [Log in Pipeline](src/java_streams/debug/log_pipeline) 📝❌
+#### 3- [Side Effects](src/java_streams/debug/side_effects) ⚠️❌
+#### 4- [Debug with Thread Info](src/java_streams/debug/thread_info) 🧵❌
+#### 5- [Conditional Peek](src/java_streams/debug/conditional_peek) 🔀❌
 
 ### 15. Combining Streams
-#### 1- [Concat Two Streams](src/java/combining/concat_streams) ➕❌
-#### 2- [Zip Two Lists](src/java/combining/zip_lists) 🧷❌
-#### 3- [Merge Stream Sources](src/java/combining/merge_sources) 🔃❌
-#### 4- [Intersect Streams](src/java/combining/intersect_streams) ✨❌
-#### 5- [Union Streams](src/java/combining/union_streams) 🔗❌
+#### 1- [Concat Two Streams](src/java_streams/combining/concat_streams) ➕❌
+#### 2- [Zip Two Lists](src/java_streams/combining/zip_lists) 🧷❌
+#### 3- [Merge Stream Sources](src/java_streams/combining/merge_sources) 🔃❌
+#### 4- [Intersect Streams](src/java_streams/combining/intersect_streams) ✨❌
+#### 5- [Union Streams](src/java_streams/combining/union_streams) 🔗❌
 
 ---
 
