@@ -36,11 +36,11 @@ This repository provides categorized, real-world examples of **stream processing
 #### 5- [Collect To Set](src/java_streams/collectors_and_conversions/collect_to_set) 🧺
 
 ### 5. Sorting
-#### 1- [Sort by Salary](src/java_streams/sorting/sort_salary) 💸❌
-#### 2- [Multi-field Sort](src/java_streams/sorting/multi_sort) 🧮❌
-#### 3- [Reverse Sort](src/java_streams/sorting/reverse_sort) 🔄❌
-#### 4- [Sort Strings Alphabetically](src/java_streams/sorting/sort_strings) 🔤❌
-#### 5- [Sort Custom Objects](src/java_streams/sorting/sort_custom) 🛠️❌
+#### 1- [Sort by Salary](src/java_streams/sorting/sort_by_salary) 💸
+#### 2- [Multi-field Sort](src/java_streams/sorting/multifield_sort) 🧮
+#### 3- [Reverse Sort](src/java_streams/sorting/reverse_sort) 🔄
+#### 4- [Sort Strings Alphabetically](src/java_streams/sorting/sort_strings_alphabetically) 🔤
+#### 5- [Sort Custom Objects](src/java_streams/sorting/sort_custom_objects) 🛠️
 
 ### 6. Advanced Transformations
 #### 1- [Filter + Map + Reduce](src/java_streams/advanced/filter_map_reduce) 🧠❌
