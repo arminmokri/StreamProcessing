@@ -50,11 +50,11 @@ This repository provides categorized, real-world examples of **stream processing
 #### 5- [Distinct and Sorted](src/java_streams/advanced_transformations/distinct_and_sorted) ✨
 
 ### 7. Parallel Streams
-#### 1- [Parallel Sum](src/java_streams/parallel/parallel_sum) ⚡❌
-#### 2- [Compare Sequential vs Parallel](src/java_streams/parallel/compare) 🆚❌
-#### 3- [Thread Safety](src/java_streams/parallel/thread_safety) 🧵❌
-#### 4- [Parallel Filter and Collect](src/java_streams/parallel/filter_collect) 🔍❌
-#### 5- [Performance Benchmark](src/java_streams/parallel/benchmark) 🏁❌
+#### 1- [Parallel Sum](src/java_streams/parallel_streams/parallel_sum) ⚡
+#### 2- [Compare Sequential vs Parallel](src/java_streams/parallel_streams/compare_sequential_vs_parallel) 🆚
+#### 3- [Thread Safety](src/java_streams/parallel_streams/thread_safety) 🧵
+#### 4- [Parallel Filter and Collect](src/java_streams/parallel_streams/parallel_filter_and_collect) 🔍
+#### 5- [Parallel String Transform](src/java_streams/parallel_streams/parallel_string_transform) 🆕
 
 ### 8. Map Stream Operations
 #### 1- [Stream over Map Entries](src/java_streams/map/entries_stream) 🗃️❌
