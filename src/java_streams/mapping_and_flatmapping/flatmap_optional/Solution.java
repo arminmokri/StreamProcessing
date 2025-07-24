@@ -13,7 +13,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class Solution {
 
     public List<String> flatmapNestedLists(List<Optional<String>> list) {
-        return list.stream().flatMap(Optional::stream).collect(Collectors.toList());
+        return list.stream()
+                .flatMap(Optional::stream)
+                .collect(Collectors.toList());
 
     }
 }

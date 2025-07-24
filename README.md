@@ -22,11 +22,11 @@ This repository provides categorized, real-world examples of **stream processing
 #### 5- [FlatMap Optional](src/java_streams/mapping_and_flatmapping/flatmap_optional) ❓
 
 ### 3. Reduction & Aggregation
-#### 1- [Sum Integers](src/java_streams/reduction/sum_integers) ➕❌
-#### 2- [Average Salary](src/java_streams/reduction/avg_salary) 📊❌
-#### 3- [Find Max Salary](src/java_streams/reduction/max_salary) 🏆❌
-#### 4- [Count Elements](src/java_streams/reduction/count_elements) 🔢❌
-#### 5- [Reduce to Concatenate](src/java_streams/reduction/reduce_concat) 🔗❌
+#### 1- [Sum Integers](src/java_streams/reduction_and_aggregation/sum_integers) ➕
+#### 2- [Average Salary](src/java_streams/reduction_and_aggregation/average_salary) 📊
+#### 3- [Find Max Salary](src/java_streams/reduction_and_aggregation/find_max_salary) 🏆
+#### 4- [Count Elements](src/java_streams/reduction_and_aggregation/count_elements) 🔢
+#### 5- [Reduce to Concatenate](src/java_streams/reduction_and_aggregation/reduce_to_concatenate) 🔗
 
 ### 4. Collectors & Conversions
 #### 1- [To Map](src/java_streams/collectors/to_map) 🗺️❌

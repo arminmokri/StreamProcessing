@@ -11,7 +11,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class Solution {
 
     public List<String> mapToUppercase(List<String> list) {
-        return list.stream().map(String::toUpperCase).collect(Collectors.toList());
+        return list.stream()
+                .map(String::toUpperCase)
+                .collect(Collectors.toList());
     }
 }
 
