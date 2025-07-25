@@ -64,11 +64,11 @@ This repository provides categorized, real-world examples of **stream processing
 #### 5- [Collect Map to List](src/java_streams/map_stream_operations/collect_map_to_list) 📋
 
 ### 9. Primitive Streams
-#### 1- [IntStream Range](src/java_streams/primitives/range) 🔢❌
-#### 2- [Summary Statistics](src/java_streams/primitives/stats) 📈❌
-#### 3- [Boxing/Unboxing](src/java_streams/primitives/boxing) 📦❌
-#### 4- [DoubleStream Average](src/java_streams/primitives/double_avg) 🎯❌
-#### 5- [LongStream Generate](src/java_streams/primitives/long_generate) 🚀❌
+#### 1- [IntStream Range](src/java_streams/primitive_streams/intstream_range) 🔢
+#### 2- [Summary Statistics](src/java_streams/primitive_streams/summary_statistics) 📈
+#### 3- [Boxing/Unboxing](src/java_streams/primitive_streams/boxing_unboxing) 📦
+#### 4- [DoubleStream Average](src/java_streams/primitive_streams/doublestream_average) 🎯
+#### 5- [LongStream Generate](src/java_streams/primitive_streams/longstream_generate) 🚀
 
 ### 10. Exception Handling
 #### 1- [Handle ParseException](src/java_streams/exceptions/parse_exception) 🚫❌
