@@ -59,9 +59,9 @@ This repository provides categorized, real-world examples of **stream processing
 ### 8. Map Stream Operations
 #### 1- [Stream over Map Entries](src/java_streams/map_stream_operations/stream_over_map_entries) 🗃️
 #### 2- [Sort Map by Value](src/java_streams/map_stream_operations/sort_map_by_value) 📉
-#### 3- [Merge Maps](src/java_streams/map_stream_operations/merge_maps) 🔀❌
-#### 4- [Filter Map by Key](src/java_streams/map_stream_operations/filter_map_by_key) 🔑❌
-#### 5- [Collect Map to List](src/java_streams/map_stream_operations/collect_map_to_list) 📋❌
+#### 3- [Merge Maps](src/java_streams/map_stream_operations/merge_maps) 🔀
+#### 4- [Filter Map by Key](src/java_streams/map_stream_operations/filter_map_by_key) 🔑
+#### 5- [Collect Map to List](src/java_streams/map_stream_operations/collect_map_to_list) 📋
 
 ### 9. Primitive Streams
 #### 1- [IntStream Range](src/java_streams/primitives/range) 🔢❌
