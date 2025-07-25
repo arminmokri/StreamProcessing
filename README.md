@@ -57,7 +57,7 @@ This repository provides categorized, real-world examples of **stream processing
 #### 5- [Parallel String Transform](src/java_streams/parallel_streams/parallel_string_transform) 🆕
 
 ### 8. Map Stream Operations
-#### 1- [Stream over Map Entries](src/java_streams/map/entries_stream) 🗃️❌
+#### 1- [Stream over Map Entries](src/java_streams/map_stream_operations/stream_over_map_entries) 🗃️
 #### 2- [Sort Map by Value](src/java_streams/map/sort_by_value) 📉❌
 #### 3- [Merge Maps](src/java_streams/map/merge_maps) 🔀❌
 #### 4- [Filter Map by Key](src/java_streams/map/filter_by_key) 🔑❌
