@@ -71,11 +71,9 @@ This repository provides categorized, real-world examples of **stream processing
 #### 5- [LongStream Generate](src/java_streams/primitive_streams/longstream_generate) 🚀
 
 ### 10. Exception Handling
-#### 1- [Handle ParseException](src/java_streams/exceptions/parse_exception) 🚫❌
-#### 2- [Safe IO in Stream](src/java_streams/exceptions/io_stream) 🧯❌
-#### 3- [Wrap Checked Exceptions](src/java_streams/exceptions/wrapper) 🔁❌
-#### 4- [Log Exceptions in Stream](src/java_streams/exceptions/log_exceptions) 📝❌
-#### 5- [Recover from Exceptions](src/java_streams/exceptions/recover) 🔄❌
+#### 1- [Handle ParseException](src/java_streams/exception_handling/handle_parseexception) 🚫
+#### 2- [Safe IO in Stream](src/java_streams/exception_handling/safe_io_in_stream) 🧯
+#### 3- [Recover from Exceptions](src/java_streams/exception_handling/recover_from_exceptions) 🔄
 
 ### 11. Custom Collectors
 #### 1- [Custom Collector for String Join](src/java_streams/custom_collector/string_join) 🧵❌

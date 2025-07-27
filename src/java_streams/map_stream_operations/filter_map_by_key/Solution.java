@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
 
@@ -17,7 +16,7 @@ public class Solution {
                 .entrySet()
                 .stream()
                 .filter(entry -> entry.getKey().startsWith(startsWith))
-                .collect(Collectors.toMap(Map.Entry::getKey,Map.Entry::getValue));
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 }
 
@@ -32,9 +31,9 @@ class SolutionTest {
     @Test
     public void testDefaultCase() {
         assertEquals(
-                Map.of("two", 2, "three" , 3),
+                Map.of("two", 2, "three", 3),
                 solution.filterMapByKey(
-                        Map.of("one", 1, "two", 2, "three" , 3), "t"
+                        Map.of("one", 1, "two", 2, "three", 3), "t"
                 )
         );
     }

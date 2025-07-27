@@ -1,0 +1,68 @@
+package java_streams.exception_handling.handle_parseexception;
+
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class Solution {
+
+    public List<Integer> handleParseException(List<String> list) {
+        return list.stream()
+                .map(s -> {
+                            try {
+                                return Integer.parseInt(s);
+                            } catch (NumberFormatException e) {
+                                System.err.println("item '" + s + "' is not int.");
+                                return null;
+                            }
+                        }
+                )
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+    }
+}
+
+
+class SolutionTest {
+    private static Solution solution;
+
+    @BeforeAll
+    public static void setUp() {
+        solution = new Solution();
+    }
+
+    @Test
+    public void testDefaultCase() {
+        assertEquals(
+                List.of(10, 20, 30),
+                solution.handleParseException(List.of("10", "abc", "20", "xyz", "30"))
+        );
+    }
+
+    @Test
+    public void testAllInvalid() {
+        assertEquals(List.of(), solution.handleParseException(List.of("abc", "def", "xyz")));
+    }
+
+    @Test
+    public void testAllValid() {
+        assertEquals(List.of(1, 2, 3), solution.handleParseException(List.of("1", "2", "3")));
+    }
+
+    @Test
+    public void testEmptyList() {
+        assertEquals(List.of(), solution.handleParseException(List.of()));
+    }
+
+    @Test
+    public void testNegativeAndZero() {
+        assertEquals(List.of(0, -1, 100), solution.handleParseException(List.of("0", "-1", "100")));
+    }
+
+}
