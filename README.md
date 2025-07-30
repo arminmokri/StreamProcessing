@@ -83,11 +83,11 @@ This repository provides categorized, real-world examples of **stream processing
 #### 5- [Collector for Partitioned Lists](src/java_streams/custom_collectors/collector_for_partitioned_lists) 🎭
 
 ### 12. Real-World Use Cases
-#### 1- [Group Books by Author](src/java_streams/usecases/books_by_author) 📚❌
-#### 2- [Sum Orders per Customer](src/java_streams/usecases/orders_sum) 🧾❌
-#### 3- [Filter Active Users](src/java_streams/usecases/active_users) ✅❌
-#### 4- [Top Selling Products](src/java_streams/usecases/top_selling_products) 🥇❌
-#### 5- [User Login Statistics](src/java_streams/usecases/login_stats) 📊❌
+#### 1- [Group Books by Author](src/java_streams/realworld_use_cases/group_books_by_author) 📚
+#### 2- [Sum Orders per Customer](src/java_streams/realworld_use_cases/sum_orders_per_customer) 🧾
+#### 3- [Filter Active Users](src/java_streams/realworld_use_cases/filter_active_users) ✅
+#### 4- [Top Selling Products](src/java_streams/realworld_use_cases/top_selling_products) 🥇
+#### 5- [User Login Statistics](src/java_streams/realworld_use_cases/user_login_statistics) 📊
 
 ### 13. Optional Handling
 #### 1- [Optional from Find](src/java_streams/optional/find_optional) ❓❌
