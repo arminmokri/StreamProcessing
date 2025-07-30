@@ -76,11 +76,11 @@ This repository provides categorized, real-world examples of **stream processing
 #### 3- [Recover from Exceptions](src/java_streams/exception_handling/recover_from_exceptions) 🔄
 
 ### 11. Custom Collectors
-#### 1- [Custom Collector for String Join](src/java_streams/custom_collector/string_join) 🧵❌
-#### 2- [Collector to Summary Object](src/java_streams/custom_collector/summary) 📦❌
-#### 3- [Collector with Downstream](src/java_streams/custom_collector/downstream) 🌊❌
-#### 4- [Collector for Frequency Map](src/java_streams/custom_collector/frequency_map) 📊❌
-#### 5- [Collector for Partitioned Lists](src/java_streams/custom_collector/partition_lists) 🎭❌
+#### 1- [Custom Collector for String Join](src/java_streams/custom_collectors/custom_collector_for_string_join) 🧵
+#### 2- [Collector to Summary Object](src/java_streams/custom_collectors/collector_to_summary_object) 📦
+#### 3- [Collector with Downstream](src/java_streams/custom_collectors/collector_with_downstream) 🌊
+#### 4- [Collector for Frequency Map](src/java_streams/custom_collectors/collector_for_frequency_map) 📊
+#### 5- [Collector for Partitioned Lists](src/java_streams/custom_collectors/collector_for_partitioned_lists) 🎭
 
 ### 12. Real-World Use Cases
 #### 1- [Group Books by Author](src/java_streams/usecases/books_by_author) 📚❌
