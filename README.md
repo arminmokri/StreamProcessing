@@ -90,11 +90,11 @@ This repository provides categorized, real-world examples of **stream processing
 #### 5- [User Login Statistics](src/java_streams/realworld_use_cases/user_login_statistics) 📊
 
 ### 13. Optional Handling
-#### 1- [Optional from Find](src/java_streams/optional/find_optional) ❓❌
-#### 2- [Default if Empty](src/java_streams/optional/default) 🛡️❌
-#### 3- [Map Optional Values](src/java_streams/optional/map_optional) 🔁❌
-#### 4- [Filter Optional](src/java_streams/optional/filter_optional) 🔍❌
-#### 5- [FlatMap Optional](src/java_streams/optional/flatmap_optional) 🔄❌
+#### 1- [Optional from Find](src/java_streams/optional_handling/optional_from_find) ❓
+#### 2- [Default if Empty](src/java_streams/optional_handling/default_if_empty) 🛡️
+#### 3- [Map Optional Values](src/java_streams/optional_handling/map_optional_values) 🔁
+#### 4- [Filter Optional](src/java_streams/optional_handling/filter_optional) 🔍
+#### 5- [FlatMap Optional](src/java_streams/optional_handling/flatmap_optional) 🔄
 
 ### 14. Debugging with Peek
 #### 1- [Peek Intermediate Values](src/java_streams/debug/peek_debug) 🐞❌
