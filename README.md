@@ -104,11 +104,11 @@ This repository provides categorized, real-world examples of **stream processing
 #### 5- [Conditional Peek](src/java_streams/debugging_with_peek/conditional_peek) 🔀
 
 ### 15. Combining Streams
-#### 1- [Concat Two Streams](src/java_streams/combining/concat_streams) ➕❌
-#### 2- [Zip Two Lists](src/java_streams/combining/zip_lists) 🧷❌
-#### 3- [Merge Stream Sources](src/java_streams/combining/merge_sources) 🔃❌
-#### 4- [Intersect Streams](src/java_streams/combining/intersect_streams) ✨❌
-#### 5- [Union Streams](src/java_streams/combining/union_streams) 🔗❌
+#### 1- [Concat Two Streams](src/java_streams/combining_streams/concat_two_streams) ➕
+#### 2- [Zip Two Lists](src/java_streams/combining_streams/zip_two_lists) 🧷
+#### 3- [Merge Stream Sources](src/java_streams/combining_streams/merge_stream_sources) 🔃
+#### 4- [Intersect Streams](src/java_streams/combining_streams/intersect_streams) ✨
+#### 5- [Union Streams](src/java_streams/combining_streams/union_streams) 🔗
 
 ---
 
