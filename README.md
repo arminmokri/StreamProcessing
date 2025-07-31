@@ -97,11 +97,11 @@ This repository provides categorized, real-world examples of **stream processing
 #### 5- [FlatMap Optional](src/java_streams/optional_handling/flatmap_optional) 🔄
 
 ### 14. Debugging with Peek
-#### 1- [Peek Intermediate Values](src/java_streams/debug/peek_debug) 🐞❌
-#### 2- [Log in Pipeline](src/java_streams/debug/log_pipeline) 📝❌
-#### 3- [Side Effects](src/java_streams/debug/side_effects) ⚠️❌
-#### 4- [Debug with Thread Info](src/java_streams/debug/thread_info) 🧵❌
-#### 5- [Conditional Peek](src/java_streams/debug/conditional_peek) 🔀❌
+#### 1- [Peek Intermediate Values](src/java_streams/debugging_with_peek/peek_intermediate_values) 🐞
+#### 2- [Log in Pipeline](src/java_streams/debugging_with_peek/log_in_pipeline) 📝
+#### 3- [Side Effects](src/java_streams/debugging_with_peek/side_effects) ⚠️
+#### 4- [Debug with Thread Info](src/java_streams/debugging_with_peek/debug_with_thread_info) 🧵
+#### 5- [Conditional Peek](src/java_streams/debugging_with_peek/conditional_peek) 🔀
 
 ### 15. Combining Streams
 #### 1- [Concat Two Streams](src/java_streams/combining/concat_streams) ➕❌
