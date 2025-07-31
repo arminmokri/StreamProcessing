@@ -28,3 +28,4 @@ replay_pid*
 StreamProcessing.iml
 out/
 build/
+.gradle/
