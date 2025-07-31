@@ -115,43 +115,43 @@ This repository provides categorized, real-world examples of **stream processing
 ## Kafka Streams
 
 ### 1. Basics
-#### 1- [Word Count Example](src/kafka/basics/word_count) 📊❌
-#### 2- [Filter and Map Kafka Records](src/kafka/basics/filter_map) 🔎❌
-#### 3- [Stateful Transform](src/kafka/basics/stateful) 🧠❌
-#### 4- [Read from Topic](src/kafka/basics/read_topic) 📨❌
-#### 5- [Write to Topic](src/kafka/basics/write_topic) ✍️❌
+#### 1- [Word Count](src/kafka_streams/basics/word_count) 📊❌
+#### 2- [Filter and Map Kafka Records](src/kafka_streams/basics/filter_and_map_kafka_records) 🔎❌
+#### 3- [Stateful Transform](src/kafka_streams/basics/stateful_transform) 🧠❌
+#### 4- [Read from Topic](src/kafka_streams/basics/read_from_topic) 📨❌
+#### 5- [Write to Topic](src/kafka_streams/basics/write_to_topic) ✍️❌
 
 ### 2. Aggregation
-#### 1- [Group By Key and Count](src/kafka/aggregation/group_count) 🧮❌
-#### 2- [Sum Values by Window](src/kafka/aggregation/window_sum) ⏲️❌
-#### 3- [Custom Aggregator](src/kafka/aggregation/custom_agg) ⚙️❌
-#### 4- [Count Per Key](src/kafka/aggregation/count_per_key) 📈❌
-#### 5- [Aggregate to List](src/kafka/aggregation/aggregate_list) 📋❌
+#### 1- [Group By Key and Count](src/kafka_streams/aggregation/group_count) 🧮❌
+#### 2- [Sum Values by Window](src/kafka_streams/aggregation/window_sum) ⏲️❌
+#### 3- [Custom Aggregator](src/kafka_streams/aggregation/custom_agg) ⚙️❌
+#### 4- [Count Per Key](src/kafka_streams/aggregation/count_per_key) 📈❌
+#### 5- [Aggregate to List](src/kafka_streams/aggregation/aggregate_list) 📋❌
 
 ### 3. Joins
-#### 1- [KStream-KStream Join](src/kafka/joins/stream_stream_join) 🔀❌
-#### 2- [KStream-Table Join](src/kafka/joins/stream_table_join) 🪢❌
-#### 3- [Windowed Joins](src/kafka/joins/windowed_join) ⏳❌
-#### 4- [Left Join](src/kafka/joins/left_join) 🧩❌
-#### 5- [Outer Join](src/kafka/joins/outer_join) 🌐❌
+#### 1- [KStream-KStream Join](src/kafka_streams/joins/stream_stream_join) 🔀❌
+#### 2- [KStream-Table Join](src/kafka_streams/joins/stream_table_join) 🪢❌
+#### 3- [Windowed Joins](src/kafka_streams/joins/windowed_join) ⏳❌
+#### 4- [Left Join](src/kafka_streams/joins/left_join) 🧩❌
+#### 5- [Outer Join](src/kafka_streams/joins/outer_join) 🌐❌
 
 ### 4. Windowing
-#### 1- [Time Windows](src/kafka/windowing/time_window) ⌛❌
-#### 2- [Sliding Windows](src/kafka/windowing/sliding_window) 🎚️❌
-#### 3- [Session Windows](src/kafka/windowing/session_window) 🛋️❌
-#### 4- [Hopping Windows](src/kafka/windowing/hopping_window) 🔄❌
-#### 5- [Tumbling Windows](src/kafka/windowing/tumbling_windows) ⏳❌
+#### 1- [Time Windows](src/kafka_streams/windowing/time_window) ⌛❌
+#### 2- [Sliding Windows](src/kafka_streams/windowing/sliding_window) 🎚️❌
+#### 3- [Session Windows](src/kafka_streams/windowing/session_window) 🛋️❌
+#### 4- [Hopping Windows](src/kafka_streams/windowing/hopping_window) 🔄❌
+#### 5- [Tumbling Windows](src/kafka_streams/windowing/tumbling_windows) ⏳❌
 
 ### 5. Topology & DSL
-#### 1- [Build Topology Manually](src/kafka/dsl/manual_topology) 🏗️❌
-#### 2- [DSL Word Count](src/kafka/dsl/dsl_count) 📖❌
-#### 3- [Branching Streams](src/kafka/dsl/branching) 🌿❌
-#### 4- [Transform Values](src/kafka/dsl/transform_values) 🔧❌
-#### 5- [Filter Streams](src/kafka/dsl/filter_streams) 🚦❌
+#### 1- [Build Topology Manually](src/kafka_streams/dsl/manual_topology) 🏗️❌
+#### 2- [DSL Word Count](src/kafka_streams/dsl/dsl_count) 📖❌
+#### 3- [Branching Streams](src/kafka_streams/dsl/branching) 🌿❌
+#### 4- [Transform Values](src/kafka_streams/dsl/transform_values) 🔧❌
+#### 5- [Filter Streams](src/kafka_streams/dsl/filter_streams) 🚦❌
 
 ### 6. Real-World Use Cases
-#### 1- [Transaction Monitoring](src/kafka/usecases/transactions) 💳❌
-#### 2- [Clickstream Analytics](src/kafka/usecases/clickstream) 🖱️❌
-#### 3- [IoT Sensor Aggregation](src/kafka/usecases/iot) 📡❌
-#### 4- [User Sessionization](src/kafka/usecases/sessionization) 👤❌
-#### 5- [Log Enrichment](src/kafka/usecases/log_enrichment) 🧾❌
+#### 1- [Transaction Monitoring](src/kafka_streams/usecases/transactions) 💳❌
+#### 2- [Clickstream Analytics](src/kafka_streams/usecases/clickstream) 🖱️❌
+#### 3- [IoT Sensor Aggregation](src/kafka_streams/usecases/iot) 📡❌
+#### 4- [User Sessionization](src/kafka_streams/usecases/sessionization) 👤❌
+#### 5- [Log Enrichment](src/kafka_streams/usecases/log_enrichment) 🧾❌
