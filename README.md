@@ -115,7 +115,7 @@ This repository provides categorized, real-world examples of **stream processing
 ## Kafka Streams
 
 ### 1. Basics
-#### 1- [Word Count](src/main/java/kafka_streams/basics/word_count) 📊❌
+#### 1- [Word Count](src/main/java/kafka_streams/basics/word_count) 📊
 #### 2- [Filter and Map Kafka Records](src/main/java/kafka_streams/basics/filter_and_map_kafka_records) 🔎❌
 #### 3- [Stateful Transform](src/main/java/kafka_streams/basics/stateful_transform) 🧠❌
 #### 4- [Read from Topic](src/main/java/kafka_streams/basics/read_from_topic) 📨❌
