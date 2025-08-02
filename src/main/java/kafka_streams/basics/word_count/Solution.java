@@ -25,8 +25,9 @@ public class Solution {
 
     private KafkaStreams streams;
 
-    public StreamsBuilder buildWordCountTopology(String inputTopic, String outputTopic) {
-        StreamsBuilder builder = new StreamsBuilder();
+    private StreamsBuilder builder;
+
+    public void buildWordCountTopology(String inputTopic, String outputTopic) {
 
         KStream<String, String> stream = builder.stream(inputTopic);
 
@@ -36,11 +37,14 @@ public class Solution {
                 .count();
 
         counts.toStream().to(outputTopic);
-        return builder;
+
     }
 
     public void startStream(String inputTopic, String outputTopic) {
-        StreamsBuilder builder = buildWordCountTopology(inputTopic, outputTopic);
+
+        builder = new StreamsBuilder();
+
+        buildWordCountTopology(inputTopic, outputTopic);
 
         try {
             STATE_DIR = Files.createTempDirectory(APPLICATION_ID).toAbsolutePath();
