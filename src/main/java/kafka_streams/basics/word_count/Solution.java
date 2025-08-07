@@ -17,8 +17,8 @@ import java.util.*;
 
 public class Solution {
 
-    private static final String APPLICATION_ID = "word-count" + UUID.randomUUID();
-    private static final String CLIENT_ID = "word-count-client";
+    private static final String APPLICATION_ID = "word_count_" + UUID.randomUUID();
+    private static final String CLIENT_ID = "word_count_client";
     public static final String BOOTSTRAP_SERVERS = "localhost:9092";
 
     private static Path STATE_DIR;
@@ -28,6 +28,8 @@ public class Solution {
     private StreamsBuilder builder;
 
     public void buildWordCountTopology(String inputTopic, String outputTopic) {
+
+        builder = new StreamsBuilder();
 
         KStream<String, String> stream = builder.stream(inputTopic);
 
@@ -41,8 +43,6 @@ public class Solution {
     }
 
     public void startStream(String inputTopic, String outputTopic) {
-
-        builder = new StreamsBuilder();
 
         buildWordCountTopology(inputTopic, outputTopic);
 
