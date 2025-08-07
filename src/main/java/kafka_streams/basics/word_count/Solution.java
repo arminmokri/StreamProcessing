@@ -17,8 +17,8 @@ import java.util.*;
 
 public class Solution {
 
-    private static final String APPLICATION_ID = "word_count_" + UUID.randomUUID();
-    private static final String CLIENT_ID = "word_count_client";
+    private static final String APPLICATION_ID = "word_count" + "_" + UUID.randomUUID();
+    private static final String CLIENT_ID = "word_count" + "_client";
     public static final String BOOTSTRAP_SERVERS = "localhost:9092";
 
     private static Path STATE_DIR;

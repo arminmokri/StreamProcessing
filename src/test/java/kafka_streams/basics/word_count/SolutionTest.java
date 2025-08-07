@@ -23,8 +23,8 @@ import java.util.Properties;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SolutionTest {
-    private static final String INPUT_TOPIC = "word_count_input";
-    private static final String OUTPUT_TOPIC = "word_count_output";
+    private static final String INPUT_TOPIC = "word_count" + "_input";
+    private static final String OUTPUT_TOPIC = "word_count" + "_output";
 
     private static Solution solution;
     private static KafkaProducer<String, String> producer;
