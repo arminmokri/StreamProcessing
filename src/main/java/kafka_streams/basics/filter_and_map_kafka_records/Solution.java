@@ -54,7 +54,7 @@ public class Solution {
                 })
                 .filter((key, userEvent) -> Objects.nonNull(userEvent))
                 .filter((key, userEvent) -> userEvent.age >= 18)
-                .peek((key, userEvent) -> System.out.println(key + "   " + userEvent.toString()))
+                .peek((key, userEvent) -> System.out.println("key='" + key + "' value='" + userEvent.toString() + "'"))
                 .map((key, userEvent) -> KeyValue.pair("name", userEvent.name));
 
         userEventKTable.to(outputTopic);
