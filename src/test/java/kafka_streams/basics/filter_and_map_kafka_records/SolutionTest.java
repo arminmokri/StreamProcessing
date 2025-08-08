@@ -71,7 +71,7 @@ public class SolutionTest {
     }
 
     @Test
-    public void testWordCountStream() {
+    public void testDefaultCase() {
         sendInput("{\"name\": \"alice\", \"age\": 17}");
         sendInput("{\"name\": \"bob\", \"age\": 25}");
         Map<String, String> results = readOutput(1, 5_000);

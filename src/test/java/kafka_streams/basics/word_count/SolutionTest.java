@@ -72,7 +72,7 @@ public class SolutionTest {
     }
 
     @Test
-    public void testWordCountStream() {
+    public void testDefaultCase() {
         sendInput("hello kafka hello streams");
         Map<String, Long> results = readOutput(3, 5_000);
 
