@@ -1,14 +1,16 @@
-package kafka_streams.basics.word_count;
+package kafka_streams.basics.filter_and_map_kafka_records;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
+import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.kstream.KStream;
-import org.apache.kafka.streams.kstream.KTable;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -16,6 +18,13 @@ import java.nio.file.Path;
 import java.util.*;
 
 public class Solution {
+
+    record UserEvent(String name, int age) {
+        @Override
+        public String toString() {
+            return "UserEvent{name='" + name + "', age=" + age + '}';
+        }
+    }
 
     private static final String APPLICATION_ID = "word_count" + "_" + UUID.randomUUID();
     private static final String CLIENT_ID = "word_count" + "_client";
@@ -27,24 +36,33 @@ public class Solution {
 
     private StreamsBuilder builder;
 
-    public void buildWordCountTopology(String inputTopic, String outputTopic) {
+    public void buildFilterAndMapKafkaRecordsTopology(String inputTopic, String outputTopic) {
+
+        ObjectMapper mapper = new ObjectMapper();
 
         builder = new StreamsBuilder();
 
         KStream<String, String> stream = builder.stream(inputTopic);
 
-        KTable<String, Long> counts = stream
-                .flatMapValues(value -> Arrays.asList(value.toLowerCase().split("\\W+")))
-                .groupBy((key, word) -> word)
-                .count();
+        KStream<String, String> userEventKTable = stream
+                .mapValues(str -> {
+                    try {
+                        return mapper.readValue(str, UserEvent.class);
+                    } catch (JsonProcessingException e) {
+                        return null;
+                    }
+                })
+                .filter((key, userEvent) -> Objects.nonNull(userEvent))
+                .filter((key, userEvent) -> userEvent.age >= 18)
+                .peek((key, userEvent) -> System.out.println(key + "   " + userEvent.toString()))
+                .map((key, userEvent) -> KeyValue.pair("name", userEvent.name));
 
-        counts.toStream().to(outputTopic);
-
+        userEventKTable.to(outputTopic);
     }
 
     public void startStream(String inputTopic, String outputTopic) {
 
-        buildWordCountTopology(inputTopic, outputTopic);
+        buildFilterAndMapKafkaRecordsTopology(inputTopic, outputTopic);
 
         try {
             STATE_DIR = Files.createTempDirectory(APPLICATION_ID).toAbsolutePath();
