@@ -34,24 +34,24 @@ public class SolutionTest {
         solution = new Solution();
 
         // Clean up topics before starting
-        kafka_streams.basics.word_count.Solution.deleteTopic(INPUT_TOPIC);
-        kafka_streams.basics.word_count.Solution.deleteTopic(OUTPUT_TOPIC);
-        kafka_streams.basics.word_count.Solution.createTopic(INPUT_TOPIC);
-        kafka_streams.basics.word_count.Solution.createTopic(OUTPUT_TOPIC);
+        Solution.deleteTopic(INPUT_TOPIC);
+        Solution.deleteTopic(OUTPUT_TOPIC);
+        Solution.createTopic(INPUT_TOPIC);
+        Solution.createTopic(OUTPUT_TOPIC);
 
         // Start Kafka Streams
         solution.startStream(INPUT_TOPIC, OUTPUT_TOPIC);
 
         // Init Producer
         Properties producerProps = new Properties();
-        producerProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafka_streams.basics.word_count.Solution.BOOTSTRAP_SERVERS);
+        producerProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, Solution.BOOTSTRAP_SERVERS);
         producerProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         producerProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         producer = new KafkaProducer<>(producerProps);
 
         // Init Consumer
         Properties consumerProps = new Properties();
-        consumerProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafka_streams.basics.word_count.Solution.BOOTSTRAP_SERVERS);
+        consumerProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, Solution.BOOTSTRAP_SERVERS);
         consumerProps.put(ConsumerConfig.GROUP_ID_CONFIG, "test-consumer");
         consumerProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         consumerProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
@@ -66,7 +66,7 @@ public class SolutionTest {
         if (consumer != null) consumer.close();
 
         solution.stopStream();
-        kafka_streams.basics.word_count.Solution.deleteTopic(INPUT_TOPIC);
+        Solution.deleteTopic(INPUT_TOPIC);
         Solution.deleteTopic(OUTPUT_TOPIC);
     }
 

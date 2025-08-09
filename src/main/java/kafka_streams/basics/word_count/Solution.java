@@ -27,7 +27,7 @@ public class Solution {
 
     private StreamsBuilder builder;
 
-    public void buildWordCountTopology(String inputTopic, String outputTopic) {
+    public void buildTopology(String inputTopic, String outputTopic) {
 
         builder = new StreamsBuilder();
 
@@ -44,7 +44,7 @@ public class Solution {
 
     public void startStream(String inputTopic, String outputTopic) {
 
-        buildWordCountTopology(inputTopic, outputTopic);
+        buildTopology(inputTopic, outputTopic);
 
         try {
             STATE_DIR = Files.createTempDirectory(APPLICATION_ID).toAbsolutePath();

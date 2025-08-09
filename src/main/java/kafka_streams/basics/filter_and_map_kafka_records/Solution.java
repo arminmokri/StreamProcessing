@@ -36,7 +36,7 @@ public class Solution {
 
     private StreamsBuilder builder;
 
-    public void buildFilterAndMapKafkaRecordsTopology(String inputTopic, String outputTopic) {
+    public void buildTopology(String inputTopic, String outputTopic) {
 
         ObjectMapper mapper = new ObjectMapper();
 
@@ -52,17 +52,18 @@ public class Solution {
                         return null;
                     }
                 })
-                .filter((key, userEvent) -> Objects.nonNull(userEvent))
-                .filter((key, userEvent) -> userEvent.age >= 18)
                 .peek((key, userEvent) -> System.out.println("key='" + key + "' value='" + userEvent.toString() + "'"))
-                .map((key, userEvent) -> KeyValue.pair("name", userEvent.name));
+                .filter((key, userEvent) -> Objects.nonNull(userEvent))
+                .filter((key, userEvent) -> userEvent.age() >= 18)
+                .peek((key, userEvent) -> System.out.println("key='" + key + "' value='" + userEvent.toString() + "'"))
+                .map((key, userEvent) -> KeyValue.pair("name", userEvent.name()));
 
         userEventKTable.to(outputTopic);
     }
 
     public void startStream(String inputTopic, String outputTopic) {
 
-        buildFilterAndMapKafkaRecordsTopology(inputTopic, outputTopic);
+        buildTopology(inputTopic, outputTopic);
 
         try {
             STATE_DIR = Files.createTempDirectory(APPLICATION_ID).toAbsolutePath();
