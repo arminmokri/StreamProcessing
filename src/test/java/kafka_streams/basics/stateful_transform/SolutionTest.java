@@ -72,10 +72,10 @@ public class SolutionTest {
 
     @Test
     public void testDefaultCase() {
-        sendInput("{\"user\": \"alice\", \"amount\": 50.0}");
-        sendInput("{\"user\": \"alice\", \"amount\": 20.0}");
-        sendInput("{\"user\": \"bob\",   \"amount\": 30.0}");
-        sendInput("{\"user\": \"alice\", \"amount\": 10.0}");
+        sendInput(null, "{\"user\": \"alice\", \"amount\": 50.0}");
+        sendInput(null, "{\"user\": \"alice\", \"amount\": 20.0}");
+        sendInput(null, "{\"user\": \"bob\",   \"amount\": 30.0}");
+        sendInput(null, "{\"user\": \"alice\", \"amount\": 10.0}");
 
         Map<String, String> results = readOutput(4, 5_000);
 
@@ -83,8 +83,8 @@ public class SolutionTest {
         assertEquals(30d, Double.parseDouble(results.get("bob")));
     }
 
-    private void sendInput(String value) {
-        producer.send(new ProducerRecord<>(INPUT_TOPIC, null, value));
+    private void sendInput(String key, String value) {
+        producer.send(new ProducerRecord<>(INPUT_TOPIC, key, value));
         producer.flush();
     }
 

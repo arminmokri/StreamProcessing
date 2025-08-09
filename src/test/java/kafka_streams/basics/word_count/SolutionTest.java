@@ -73,7 +73,7 @@ public class SolutionTest {
 
     @Test
     public void testDefaultCase() {
-        sendInput("hello kafka hello streams");
+        sendInput(null, "hello kafka hello streams");
         Map<String, Long> results = readOutput(3, 5_000);
 
         assertEquals(2L, results.get("hello"));
@@ -81,8 +81,8 @@ public class SolutionTest {
         assertEquals(1L, results.get("streams"));
     }
 
-    private void sendInput(String value) {
-        producer.send(new ProducerRecord<>(INPUT_TOPIC, null, value));
+    private void sendInput(String key, String value) {
+        producer.send(new ProducerRecord<>(INPUT_TOPIC, key, value));
         producer.flush();
     }
 

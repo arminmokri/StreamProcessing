@@ -1,4 +1,4 @@
-package kafka_streams.basics.filter_and_map_kafka_records;
+package kafka_streams.basics.write_and_read_to_topic;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -22,8 +22,8 @@ import java.util.Properties;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SolutionTest {
-    private static final String INPUT_TOPIC = "filter_and_map_kafka_records" + "_input";
-    private static final String OUTPUT_TOPIC = "filter_and_map_kafka_records" + "_output";
+    private static final String INPUT_TOPIC = "write_and_read_to_topic" + "_input";
+    private static final String OUTPUT_TOPIC = "write_and_read_to_topic" + "_output";
 
     private static Solution solution;
     private static KafkaProducer<String, String> producer;
@@ -72,11 +72,10 @@ public class SolutionTest {
 
     @Test
     public void testDefaultCase() {
-        sendInput(null, "{\"name\": \"alice\", \"age\": 17}");
-        sendInput(null, "{\"name\": \"bob\", \"age\": 25}");
+        sendInput("first_record", "Hi, I am writing to topic.");
         Map<String, String> results = readOutput(1, 5_000);
 
-        assertEquals("bob", results.get("name"));
+        assertEquals("Hi, I am writing to topic.", results.get("first_record"));
     }
 
     private void sendInput(String key, String value) {
