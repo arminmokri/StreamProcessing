@@ -34,11 +34,15 @@ public class Solution {
         KStream<String, String> stream = builder.stream(inputTopic);
 
         KTable<String, Long> counts = stream
+                .peek((key, value) -> System.out.println("input from topic -> key='" + key + "' value='" + value + "'"))
                 .flatMapValues(value -> Arrays.asList(value.toLowerCase().split("\\W+")))
                 .groupBy((key, word) -> word)
                 .count();
 
-        counts.toStream().to(outputTopic);
+        counts
+                .toStream()
+                .peek((key, value) -> System.out.println("output to topic -> key='" + key + "' value='" + value + "'"))
+                .to(outputTopic);
 
     }
 

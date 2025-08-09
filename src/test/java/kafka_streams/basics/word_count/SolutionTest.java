@@ -62,7 +62,7 @@ public class SolutionTest {
     }
 
     @AfterAll
-    public static void cleanup() throws Exception {
+    public static void cleanup() {
         if (producer != null) producer.close();
         if (consumer != null) consumer.close();
 

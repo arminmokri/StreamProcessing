@@ -1,4 +1,4 @@
-package kafka_streams.basics.filter_and_map_kafka_records;
+package kafka_streams.basics.stateful_transform;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -22,8 +22,8 @@ import java.util.Properties;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SolutionTest {
-    private static final String INPUT_TOPIC = "filter_and_map_kafka_records" + "_input";
-    private static final String OUTPUT_TOPIC = "filter_and_map_kafka_records" + "_output";
+    private static final String INPUT_TOPIC = "stateful_transform" + "_input";
+    private static final String OUTPUT_TOPIC = "stateful_transform" + "_output";
 
     private static Solution solution;
     private static KafkaProducer<String, String> producer;
@@ -66,17 +66,21 @@ public class SolutionTest {
         if (consumer != null) consumer.close();
 
         solution.stopStream();
-        Solution.deleteTopic(INPUT_TOPIC);
+        kafka_streams.basics.word_count.Solution.deleteTopic(INPUT_TOPIC);
         Solution.deleteTopic(OUTPUT_TOPIC);
     }
 
     @Test
     public void testDefaultCase() {
-        sendInput("{\"name\": \"alice\", \"age\": 17}");
-        sendInput("{\"name\": \"bob\", \"age\": 25}");
-        Map<String, String> results = readOutput(1, 5_000);
+        sendInput("{\"user\": \"alice\", \"amount\": 50.0}");
+        sendInput("{\"user\": \"alice\", \"amount\": 20.0}");
+        sendInput("{\"user\": \"bob\",   \"amount\": 30.0}");
+        sendInput("{\"user\": \"alice\", \"amount\": 10.0}");
 
-        assertEquals("bob", results.get("name"));
+        Map<String, String> results = readOutput(4, 5_000);
+
+        assertEquals(80d, Double.parseDouble(results.get("alice")));
+        assertEquals(30d, Double.parseDouble(results.get("bob")));
     }
 
     private void sendInput(String value) {

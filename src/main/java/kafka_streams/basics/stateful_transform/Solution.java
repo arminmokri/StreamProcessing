@@ -1,4 +1,4 @@
-package kafka_streams.basics.filter_and_map_kafka_records;
+package kafka_streams.basics.stateful_transform;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -6,11 +6,13 @@ import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.common.serialization.Serdes;
+import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
-import org.apache.kafka.streams.kstream.KStream;
+import org.apache.kafka.streams.kstream.*;
+import org.apache.kafka.streams.state.KeyValueStore;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -19,15 +21,15 @@ import java.util.*;
 
 public class Solution {
 
-    record UserEvent(String name, int age) {
+    record Purchase(String user, Double amount) {
         @Override
         public String toString() {
-            return "UserEvent{name='" + name + "', age=" + age + '}';
+            return "Purchase{user='" + user + "', amount=" + amount + '}';
         }
     }
 
-    private static final String APPLICATION_ID = "word_count" + "_" + UUID.randomUUID();
-    private static final String CLIENT_ID = "word_count" + "_client";
+    private static final String APPLICATION_ID = "stateful_transform" + "_" + UUID.randomUUID();
+    private static final String CLIENT_ID = "stateful_transform" + "_client";
     public static final String BOOTSTRAP_SERVERS = "localhost:9092";
 
     private static Path STATE_DIR;
@@ -44,22 +46,33 @@ public class Solution {
 
         KStream<String, String> stream = builder.stream(inputTopic);
 
-        KStream<String, String> userEventKTable = stream
+        KTable<String, Double> userTotals = stream
                 .peek((key, value) -> System.out.println("input from topic -> key='" + key + "' value='" + value + "'"))
-                .mapValues(str -> {
+                .map((key, value) -> {
                     try {
-                        return mapper.readValue(str, UserEvent.class);
+                        Purchase purchase = mapper.readValue(value, Purchase.class);
+                        return KeyValue.pair(purchase.user(), purchase.amount());
                     } catch (JsonProcessingException e) {
                         return null;
                     }
-                })
-                .filter((key, userEvent) -> Objects.nonNull(userEvent))
-                .filter((key, userEvent) -> userEvent.age() >= 18)
-                .map((key, userEvent) -> KeyValue.pair("name", userEvent.name()));
 
-        userEventKTable
+                })
+                .filter((key, value) -> Objects.nonNull(key) && Objects.nonNull(value))
+                .groupByKey(Grouped.with(Serdes.String(), Serdes.Double()))
+                .aggregate(
+                        () -> 0.0d,
+                        (user, amount, total) -> total + amount,
+                        Materialized.<String, Double, KeyValueStore<Bytes, byte[]>>as("user-totals-store")
+                                .withKeySerde(Serdes.String())
+                                .withValueSerde(Serdes.Double())
+                );
+
+        userTotals.toStream()
+                .mapValues((total) -> String.format("%.2f", total))
                 .peek((key, value) -> System.out.println("output to topic -> key='" + key + "' value='" + value + "'"))
-                .to(outputTopic);
+                .to(outputTopic, Produced.with(Serdes.String(), Serdes.String()));
+
+
     }
 
     public void startStream(String inputTopic, String outputTopic) {
@@ -126,7 +139,7 @@ public class Solution {
         props.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, 200); // faster commit for testing
 
         // For illustrative purposes we disable record caches.
-        //props.put(StreamsConfig.STATESTORE_CACHE_MAX_BYTES_CONFIG, 0);
+        props.put(StreamsConfig.STATESTORE_CACHE_MAX_BYTES_CONFIG, 0);
 
         // Use a temporary directory for storing state, which will be automatically removed after the test.
         props.put(StreamsConfig.STATE_DIR_CONFIG, STATE_DIR.toString());
