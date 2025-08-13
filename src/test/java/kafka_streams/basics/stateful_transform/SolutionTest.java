@@ -79,6 +79,8 @@ public class SolutionTest {
 
         Map<String, String> results = readOutput(4, 5_000);
 
+        System.out.println("results=" + results);
+
         assertEquals(80d, Double.parseDouble(results.get("alice")));
         assertEquals(30d, Double.parseDouble(results.get("bob")));
     }

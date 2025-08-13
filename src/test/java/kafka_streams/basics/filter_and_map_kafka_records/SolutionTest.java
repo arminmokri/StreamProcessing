@@ -76,7 +76,9 @@ public class SolutionTest {
         sendInput(null, "{\"name\": \"bob\", \"age\": 25}");
         Map<String, String> results = readOutput(1, 5_000);
 
-        assertEquals("bob", results.get("name"));
+        System.out.println("results=" + results);
+
+        assertEquals("bob", results.get("name-bob"));
     }
 
     private void sendInput(String key, String value) {

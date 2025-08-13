@@ -75,6 +75,8 @@ public class SolutionTest {
         sendInput("first_record", "Hi, I am writing to topic.");
         Map<String, String> results = readOutput(1, 5_000);
 
+        System.out.println("results=" + results);
+
         assertEquals("Hi, I am writing to topic.", results.get("first_record"));
     }
 

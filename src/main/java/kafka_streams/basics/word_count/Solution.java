@@ -7,8 +7,11 @@ import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
+import org.apache.kafka.streams.Topology;
+import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.KTable;
+import org.apache.kafka.streams.kstream.Produced;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -25,13 +28,14 @@ public class Solution {
 
     private KafkaStreams streams;
 
-    private StreamsBuilder builder;
+    public Topology buildTopology(String inputTopic, String outputTopic) {
 
-    public void buildTopology(String inputTopic, String outputTopic) {
+        StreamsBuilder builder = new StreamsBuilder();
 
-        builder = new StreamsBuilder();
+        Consumed<String, String> consumed = Consumed.with(Serdes.String(), Serdes.String());
+        Produced<String, Long> produced = Produced.with(Serdes.String(), Serdes.Long());
 
-        KStream<String, String> stream = builder.stream(inputTopic);
+        KStream<String, String> stream = builder.stream(inputTopic, consumed);
 
         KTable<String, Long> counts = stream
                 .peek((key, value) -> System.out.println("input from topic -> key='" + key + "' value='" + value + "'"))
@@ -42,20 +46,22 @@ public class Solution {
         counts
                 .toStream()
                 .peek((key, value) -> System.out.println("output to topic -> key='" + key + "' value='" + value + "'"))
-                .to(outputTopic);
+                .to(outputTopic, produced);
+
+        return builder.build();
 
     }
 
     public void startStream(String inputTopic, String outputTopic) {
 
-        buildTopology(inputTopic, outputTopic);
+        Topology topology = buildTopology(inputTopic, outputTopic);
 
         try {
             STATE_DIR = Files.createTempDirectory(APPLICATION_ID).toAbsolutePath();
         } catch (IOException ioException) {
         }
 
-        streams = new KafkaStreams(builder.build(), getStreamsConfiguration());
+        streams = new KafkaStreams(topology, getStreamsConfiguration());
         streams.start();
 
         // Wait briefly to ensure the topology is ready

@@ -74,11 +74,15 @@ public class SolutionTest {
     @Test
     public void testDefaultCase() {
         sendInput(null, "hello kafka hello streams");
-        Map<String, Long> results = readOutput(3, 5_000);
+        sendInput(null, "hello again");
+        Map<String, Long> results = readOutput(4, 5_000);
 
-        assertEquals(2L, results.get("hello"));
+        System.out.println("results=" + results);
+
+        assertEquals(3L, results.get("hello"));
         assertEquals(1L, results.get("kafka"));
         assertEquals(1L, results.get("streams"));
+        assertEquals(1L, results.get("again"));
     }
 
     private void sendInput(String key, String value) {

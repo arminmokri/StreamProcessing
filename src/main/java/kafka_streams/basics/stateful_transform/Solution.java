@@ -1,20 +1,18 @@
 package kafka_streams.basics.stateful_transform;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.NewTopic;
+import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
-import org.apache.kafka.streams.KafkaStreams;
-import org.apache.kafka.streams.KeyValue;
-import org.apache.kafka.streams.StreamsBuilder;
-import org.apache.kafka.streams.StreamsConfig;
+import org.apache.kafka.streams.*;
 import org.apache.kafka.streams.kstream.*;
 import org.apache.kafka.streams.state.KeyValueStore;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -36,28 +34,19 @@ public class Solution {
 
     private KafkaStreams streams;
 
-    private StreamsBuilder builder;
+    public Topology buildTopology(String inputTopic, String outputTopic) {
 
-    public void buildTopology(String inputTopic, String outputTopic) {
+        StreamsBuilder builder = new StreamsBuilder();
 
-        ObjectMapper mapper = new ObjectMapper();
+        Consumed<String, Purchase> consumed = Consumed.with(Serdes.String(), getSerde(Purchase.class));
+        Produced<String, String> produced = Produced.with(Serdes.String(), Serdes.String());
 
-        builder = new StreamsBuilder();
-
-        KStream<String, String> stream = builder.stream(inputTopic);
+        KStream<String, Purchase> stream = builder.stream(inputTopic, consumed);
 
         KTable<String, Double> userTotals = stream
+                .filter((key, purchase) -> Objects.nonNull(purchase))
                 .peek((key, value) -> System.out.println("input from topic -> key='" + key + "' value='" + value + "'"))
-                .map((key, value) -> {
-                    try {
-                        Purchase purchase = mapper.readValue(value, Purchase.class);
-                        return KeyValue.pair(purchase.user(), purchase.amount());
-                    } catch (JsonProcessingException e) {
-                        return null;
-                    }
-
-                })
-                .filter((key, value) -> Objects.nonNull(key) && Objects.nonNull(value))
+                .map((key, value) -> KeyValue.pair(value.user(), value.amount()))
                 .groupByKey(Grouped.with(Serdes.String(), Serdes.Double()))
                 .aggregate(
                         () -> 0.0d,
@@ -70,21 +59,21 @@ public class Solution {
         userTotals.toStream()
                 .mapValues((total) -> String.format("%.2f", total))
                 .peek((key, value) -> System.out.println("output to topic -> key='" + key + "' value='" + value + "'"))
-                .to(outputTopic, Produced.with(Serdes.String(), Serdes.String()));
+                .to(outputTopic, produced);
 
-
+        return builder.build();
     }
 
     public void startStream(String inputTopic, String outputTopic) {
 
-        buildTopology(inputTopic, outputTopic);
+        Topology topology = buildTopology(inputTopic, outputTopic);
 
         try {
             STATE_DIR = Files.createTempDirectory(APPLICATION_ID).toAbsolutePath();
         } catch (IOException ioException) {
         }
 
-        streams = new KafkaStreams(builder.build(), getStreamsConfiguration());
+        streams = new KafkaStreams(topology, getStreamsConfiguration());
         streams.start();
 
         // Wait briefly to ensure the topology is ready
@@ -145,6 +134,28 @@ public class Solution {
         props.put(StreamsConfig.STATE_DIR_CONFIG, STATE_DIR.toString());
 
         return props;
+    }
+
+    public static <T> Serde<T> getSerde(Class<T> type) {
+        ObjectMapper mapper = new ObjectMapper();
+        return Serdes.serdeFrom(
+                (topic, data) -> {
+                    try {
+                        return mapper.writeValueAsString(data).getBytes(StandardCharsets.UTF_8);
+                    } catch (IOException e) {
+                        System.err.println(e.getMessage());
+                        return null;
+                    }
+                },
+                (topic, data) -> {
+                    try {
+                        return mapper.readValue(new String(data, StandardCharsets.UTF_8), type);
+                    } catch (IOException e) {
+                        System.err.println(e.getMessage());
+                        return null;
+                    }
+                }
+        );
     }
 
     public static void createTopic(String topic) {
