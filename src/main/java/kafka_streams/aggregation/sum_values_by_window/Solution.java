@@ -11,6 +11,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class Solution {
@@ -29,8 +32,13 @@ public class Solution {
 
         Consumed<String, String> consumed = Consumed.with(Serdes.String(), Serdes.String());
         Produced<String, Long> produced = Produced.with(Serdes.String(), Serdes.Long());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss")
+                .withZone(ZoneId.systemDefault());
 
         KStream<String, String> kStream = builder.stream(inputTopic, consumed);
+
+        Grouped<String, Long> grouped = Grouped.with(Serdes.String(), Serdes.Long());
+        TimeWindows windows = TimeWindows.ofSizeWithNoGrace(Duration.ofSeconds(5));
 
         KTable<Windowed<String>, Long> kTableSum = kStream
                 .peek((key, value) -> System.out.println("input from topic -> key='" + key + "' value='" + value + "'"))
@@ -42,15 +50,15 @@ public class Solution {
                         return 0L;
                     }
                 })
-                .peek((key, value) -> System.out.println("input from topic -> key='" + key + "' value='" + value + "'"))
-
-                .groupByKey()
-                .windowedBy(TimeWindows.ofSizeWithNoGrace(Duration.ofMinutes(1)))
+                .groupByKey(grouped)
+                .windowedBy(windows)
                 .reduce(Long::sum);
 
         kTableSum.toStream()
                 .map(((key, value) -> {
-                    String newKey = key.key() + "@" + key.window().start() + "-" + key.window().end();
+                    String windowStart = formatter.format(Instant.ofEpochMilli(key.window().start()));
+                    String windowEnd = formatter.format(Instant.ofEpochMilli(key.window().end()));
+                    String newKey = key.key() + "@" + windowStart + "-" + windowEnd;
                     return KeyValue.pair(newKey, value);
                 }))
                 .peek((key, value) -> System.out.println("output to topic -> key='" + key + "' value='" + value + "'"))
@@ -115,8 +123,8 @@ public class Solution {
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
 
         // Specify default (de)serializers for record keys and for record values.
-        props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
-        props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
+        //props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
+        //props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
 
         // Records should be flushed every 100 ms. This is less than the default
         // in order to keep this example interactive.
