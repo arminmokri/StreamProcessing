@@ -81,6 +81,8 @@ public class SolutionTest {
 
         Map<String, Long> results = readOutput(5, 5_000);
 
+        System.out.println("results=" + results);
+
         assertEquals(3L, results.get("A"));
         assertEquals(2L, results.get("B"));
     }
