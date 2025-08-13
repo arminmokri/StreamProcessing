@@ -8,10 +8,7 @@ import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.Topology;
-import org.apache.kafka.streams.kstream.Consumed;
-import org.apache.kafka.streams.kstream.KStream;
-import org.apache.kafka.streams.kstream.KTable;
-import org.apache.kafka.streams.kstream.Produced;
+import org.apache.kafka.streams.kstream.*;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -34,11 +31,12 @@ public class Solution {
 
         Consumed<String, String> consumed = Consumed.with(Serdes.String(), Serdes.String());
         Produced<String, Long> produced = Produced.with(Serdes.String(), Serdes.Long());
+        Grouped<String, String> grouped = Grouped.with(Serdes.String(), Serdes.String());
 
         KStream<String, String> kStream = builder.stream(inputTopic, consumed);
 
         KTable<String, Long> counts = kStream
-                .groupByKey()
+                .groupByKey(grouped)
                 .count();
 
         counts.toStream().to(outputTopic, produced);
@@ -102,8 +100,8 @@ public class Solution {
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
 
         // Specify default (de)serializers for record keys and for record values.
-        props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
-        props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
+        //props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
+        //props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
 
         // Records should be flushed every 100 ms. This is less than the default
         // in order to keep this example interactive.
