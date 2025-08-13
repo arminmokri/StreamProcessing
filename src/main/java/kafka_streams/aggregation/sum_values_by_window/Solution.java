@@ -1,27 +1,22 @@
-package kafka_streams.basics.word_count;
+package kafka_streams.aggregation.sum_values_by_window;
 
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.common.serialization.Serdes;
-import org.apache.kafka.streams.KafkaStreams;
-import org.apache.kafka.streams.StreamsBuilder;
-import org.apache.kafka.streams.StreamsConfig;
-import org.apache.kafka.streams.Topology;
-import org.apache.kafka.streams.kstream.Consumed;
-import org.apache.kafka.streams.kstream.KStream;
-import org.apache.kafka.streams.kstream.KTable;
-import org.apache.kafka.streams.kstream.Produced;
+import org.apache.kafka.streams.*;
+import org.apache.kafka.streams.kstream.*;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.*;
 
 public class Solution {
 
-    private static final String APPLICATION_ID = "word_count" + "_" + UUID.randomUUID();
-    private static final String CLIENT_ID = "word_count" + "_client";
+    private static final String APPLICATION_ID = "sum_values_by_window" + "_" + UUID.randomUUID();
+    private static final String CLIENT_ID = "sum_values_by_window" + "_client";
     public static final String BOOTSTRAP_SERVERS = "localhost:9092";
 
     private static Path STATE_DIR;
@@ -35,21 +30,33 @@ public class Solution {
         Consumed<String, String> consumed = Consumed.with(Serdes.String(), Serdes.String());
         Produced<String, Long> produced = Produced.with(Serdes.String(), Serdes.Long());
 
-        KStream<String, String> stream = builder.stream(inputTopic, consumed);
+        KStream<String, String> kStream = builder.stream(inputTopic, consumed);
 
-        KTable<String, Long> counts = stream
+        KTable<Windowed<String>, Long> kTableSum = kStream
                 .peek((key, value) -> System.out.println("input from topic -> key='" + key + "' value='" + value + "'"))
-                .flatMapValues(value -> Arrays.asList(value.toLowerCase().split("\\W+")))
-                .groupBy((key, word) -> word)
-                .count();
+                .mapValues((readOnlyKey, value) -> {
+                    try {
+                        return Long.parseLong(value);
+                    } catch (Exception e) {
+                        System.err.println(e.getMessage());
+                        return 0L;
+                    }
+                })
+                .peek((key, value) -> System.out.println("input from topic -> key='" + key + "' value='" + value + "'"))
 
-        counts
-                .toStream()
+                .groupByKey()
+                .windowedBy(TimeWindows.ofSizeWithNoGrace(Duration.ofMinutes(1)))
+                .reduce(Long::sum);
+
+        kTableSum.toStream()
+                .map(((key, value) -> {
+                    String newKey = key.key() + "@" + key.window().start() + "-" + key.window().end();
+                    return KeyValue.pair(newKey, value);
+                }))
                 .peek((key, value) -> System.out.println("output to topic -> key='" + key + "' value='" + value + "'"))
                 .to(outputTopic, produced);
 
         return builder.build();
-
     }
 
     public void startStream(String inputTopic, String outputTopic) {

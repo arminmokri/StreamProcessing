@@ -28,7 +28,7 @@ public class Solution {
 
     private KafkaStreams streams;
 
-    public Topology buildTopology(String inputTopic, String outputTopic) {
+    private Topology buildTopology(String inputTopic, String outputTopic) {
 
         StreamsBuilder builder = new StreamsBuilder();
 
