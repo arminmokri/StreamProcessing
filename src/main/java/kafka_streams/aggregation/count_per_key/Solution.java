@@ -33,11 +33,25 @@ public class Solution {
         Produced<String, Long> produced = Produced.with(Serdes.String(), Serdes.Long());
         Grouped<String, String> grouped = Grouped.with(Serdes.String(), Serdes.String());
 
-        KStream<String, String> kStreamInput = builder.stream(inputTopic, consumed);
+        // input
+        KStream<String, String> inputKStream = builder
+                .stream(inputTopic, consumed)
+                .peek((key, value) -> {
+                    if (Objects.nonNull(key) && Objects.nonNull(value)) {
+                        System.out.println("input from topic -> key='" + key + "' value='" + value + "'");
+                    }
+                });
 
-        KTable<String, Long> kTableCounted = kStreamInput.groupByKey(grouped).count();
+        // transform
+        KTable<String, Long> kTableCounted = inputKStream
+                .groupByKey(grouped)
+                .count();
 
-        kTableCounted.toStream().to(outputTopic, produced);
+        // output
+        kTableCounted
+                .toStream()
+                .peek((key, value) -> System.out.println("output to topic -> key='" + key + "' value='" + value + "'"))
+                .to(outputTopic, produced);
 
         return builder.build();
     }

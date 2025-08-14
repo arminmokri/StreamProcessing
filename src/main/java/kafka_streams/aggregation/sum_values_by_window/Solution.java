@@ -35,13 +35,20 @@ public class Solution {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss")
                 .withZone(ZoneId.systemDefault());
 
-        KStream<String, String> kStream = builder.stream(inputTopic, consumed);
-
         Grouped<String, Long> grouped = Grouped.with(Serdes.String(), Serdes.Long());
         TimeWindows windows = TimeWindows.ofSizeWithNoGrace(Duration.ofSeconds(5));
 
-        KTable<Windowed<String>, Long> kTableSum = kStream
-                .peek((key, value) -> System.out.println("input from topic -> key='" + key + "' value='" + value + "'"))
+        // input
+        KStream<String, String> inputKStream = builder
+                .stream(inputTopic, consumed)
+                .peek((key, value) -> {
+                    if (Objects.nonNull(key) && Objects.nonNull(value)) {
+                        System.out.println("input from topic -> key='" + key + "' value='" + value + "'");
+                    }
+                });
+
+        // transform
+        KTable<Windowed<String>, Long> kTableSum = inputKStream
                 .mapValues((readOnlyKey, value) -> {
                     try {
                         return Long.parseLong(value);
@@ -54,13 +61,17 @@ public class Solution {
                 .windowedBy(windows)
                 .reduce(Long::sum);
 
-        kTableSum.toStream()
+        KStream<String, Long> kStreamSumString = kTableSum
+                .toStream()
                 .map(((key, value) -> {
                     String windowStart = formatter.format(Instant.ofEpochMilli(key.window().start()));
                     String windowEnd = formatter.format(Instant.ofEpochMilli(key.window().end()));
                     String newKey = key.key() + "@" + windowStart + "-" + windowEnd;
                     return KeyValue.pair(newKey, value);
-                }))
+                }));
+
+        // output
+        kStreamSumString
                 .peek((key, value) -> System.out.println("output to topic -> key='" + key + "' value='" + value + "'"))
                 .to(outputTopic, produced);
 

@@ -41,14 +41,22 @@ public class Solution {
         Consumed<String, UserEvent> consumed = Consumed.with(Serdes.String(), getSerde(UserEvent.class));
         Produced<String, String> produced = Produced.with(Serdes.String(), Serdes.String());
 
-        KStream<String, UserEvent> stream = builder.stream(inputTopic, consumed);
+        // input
+        KStream<String, UserEvent> inputKStream = builder
+                .stream(inputTopic, consumed)
+                .peek((key, value) -> {
+                    if (Objects.nonNull(key) && Objects.nonNull(value)) {
+                        System.out.println("input from topic -> key='" + key + "' value='" + value + "'");
+                    }
+                });
 
-        KStream<String, String> userEventKTable = stream
+        // transform
+        KStream<String, String> userEventKTable = inputKStream
                 .filter((key, userEvent) -> Objects.nonNull(userEvent))
-                .peek((key, value) -> System.out.println("input from topic -> key='" + key + "' value='" + value + "'"))
                 .filter((key, userEvent) -> userEvent.age() >= 18)
                 .map((key, userEvent) -> KeyValue.pair("name-" + userEvent.name(), userEvent.name()));
 
+        // output
         userEventKTable
                 .peek((key, value) -> System.out.println("output to topic -> key='" + key + "' value='" + value + "'"))
                 .to(outputTopic, produced);

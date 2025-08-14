@@ -40,10 +40,17 @@ public class Solution {
                         .withKeySerde(Serdes.String())
                         .withValueSerde(Serdes.String());
 
-        KStream<String, String> kStream = builder.stream(inputTopic, consumed);
+        // input
+        KStream<String, String> inputKStream = builder
+                .stream(inputTopic, consumed)
+                .peek((key, value) -> {
+                    if (Objects.nonNull(key) && Objects.nonNull(value)) {
+                        System.out.println("input from topic -> key='" + key + "' value='" + value + "'");
+                    }
+                });
 
-        KTable<String, String> kTableSum = kStream
-                .peek((key, value) -> System.out.println("input from topic -> key='" + key + "' value='" + value + "'"))
+        // transform
+        KTable<String, String> kTableSum = inputKStream
                 .groupByKey(grouped)
                 .aggregate(
                         () -> "",
@@ -57,6 +64,7 @@ public class Solution {
                         materializedStore
                 );
 
+        // output
         kTableSum.toStream()
                 .peek((key, value) -> System.out.println("output to topic -> key='" + key + "' value='" + value + "'"))
                 .to(outputTopic, produced);

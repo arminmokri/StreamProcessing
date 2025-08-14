@@ -41,11 +41,18 @@ public class Solution {
         Consumed<String, Purchase> consumed = Consumed.with(Serdes.String(), getSerde(Purchase.class));
         Produced<String, String> produced = Produced.with(Serdes.String(), Serdes.String());
 
-        KStream<String, Purchase> stream = builder.stream(inputTopic, consumed);
+        // input
+        KStream<String, Purchase> inputKStream = builder
+                .stream(inputTopic, consumed)
+                .peek((key, value) -> {
+                    if (Objects.nonNull(key) && Objects.nonNull(value)) {
+                        System.out.println("input from topic -> key='" + key + "' value='" + value + "'");
+                    }
+                });
 
-        KTable<String, Double> userTotals = stream
+        // transform
+        KTable<String, Double> userTotals = inputKStream
                 .filter((key, purchase) -> Objects.nonNull(purchase))
-                .peek((key, value) -> System.out.println("input from topic -> key='" + key + "' value='" + value + "'"))
                 .map((key, value) -> KeyValue.pair(value.user(), value.amount()))
                 .groupByKey(Grouped.with(Serdes.String(), Serdes.Double()))
                 .aggregate(
@@ -55,9 +62,11 @@ public class Solution {
                                 .withKeySerde(Serdes.String())
                                 .withValueSerde(Serdes.Double())
                 );
+        KTable<String, String> userTotalsString = userTotals
+                .mapValues((total) -> String.format("%.2f", total));
 
-        userTotals.toStream()
-                .mapValues((total) -> String.format("%.2f", total))
+        // output
+        userTotalsString.toStream()
                 .peek((key, value) -> System.out.println("output to topic -> key='" + key + "' value='" + value + "'"))
                 .to(outputTopic, produced);
 

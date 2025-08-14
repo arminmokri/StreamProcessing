@@ -34,12 +34,19 @@ public class Solution {
         Consumed<String, String> consumed = Consumed.with(Serdes.String(), Serdes.String());
         Produced<String, String> produced = Produced.with(Serdes.String(), Serdes.String());
 
-        KStream<String, String> stream = builder.stream(inputTopic, consumed);
+        // input
+        KStream<String, String> inputKStream = builder
+                .stream(inputTopic, consumed)
+                .peek((key, value) -> {
+                    if (Objects.nonNull(key) && Objects.nonNull(value)) {
+                        System.out.println("input from topic -> key='" + key + "' value='" + value + "'");
+                    }
+                });
 
-        KStream<String, String> userEventKTable = stream
-                .peek((key, value) -> System.out.println("input from topic -> key='" + key + "' value='" + value + "'"));
+        // transform
 
-        userEventKTable
+        // output
+        inputKStream
                 .peek((key, value) -> System.out.println("output to topic -> key='" + key + "' value='" + value + "'"))
                 .to(outputTopic, produced);
 
