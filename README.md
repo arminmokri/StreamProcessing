@@ -125,7 +125,7 @@ This repository provides categorized, real-world examples of **stream processing
 #### 2- [Sum Values by Window](src/main/java/kafka_streams/aggregation/sum_values_by_window) ⏲️
 #### 3- [Custom Aggregator](src/main/java/kafka_streams/aggregation/custom_aggregator) ⚙️
 #### 4- [Count Per Key](src/main/java/kafka_streams/aggregation/count_per_key) 📈
-#### 5- [Aggregate to List](src/main/java/kafka_streams/aggregation/aggregate_to_list) 📋❌
+#### 5- [Aggregate to List](src/main/java/kafka_streams/aggregation/aggregate_to_list) 📋
 
 ### 3. Joins
 #### 1- [KStream-KStream Join](src/main/java/kafka_streams/joins/stream_stream_join) 🔀❌
