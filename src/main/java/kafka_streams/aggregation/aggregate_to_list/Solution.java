@@ -64,7 +64,7 @@ public class Solution {
                 .stream(inputTopic, consumed)
                 .peek((key, value) -> {
                     if (Objects.nonNull(key) && Objects.nonNull(value)) {
-                        System.out.println("input from topic -> key='" + key + "' value='" + value + "'");
+                        System.out.println("input from topic(" + inputTopic + ") -> key='" + key + "' value='" + value + "'");
                     }
                 });
         // transform
@@ -83,7 +83,7 @@ public class Solution {
         // output
         kTableAgg
                 .toStream()
-                .peek((key, value) -> System.out.println("output to topic -> key='" + key + "' value='" + value + "'"))
+                .peek((key, value) -> System.out.println("output to topic(" + outputTopic + ") -> key='" + key + "' value='" + value + "'"))
                 .to(outputTopic, produced);
 
 
