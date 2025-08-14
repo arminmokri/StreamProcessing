@@ -56,7 +56,6 @@ public class SolutionTest {
         consumerProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         consumerProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, LongDeserializer.class.getName());
         consumer = new KafkaConsumer<>(consumerProps);
-        consumer.subscribe(List.of(OUTPUT_TOPIC));
     }
 
     @AfterAll
@@ -71,30 +70,33 @@ public class SolutionTest {
 
     @Test
     public void testDefaultCase() {
-        sendInput("A", "5");
-        sendInput("A", "7");
-        sendInput("B", "2");
-        sendInput("B", "3");
+        sendInput(INPUT_TOPIC, "A", "5");
+        sendInput(INPUT_TOPIC, "A", "7");
+        sendInput(INPUT_TOPIC, "B", "2");
+        sendInput(INPUT_TOPIC, "B", "3");
         try {
             Thread.sleep(5001);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        sendInput("A", "4");
+        sendInput(INPUT_TOPIC, "A", "4");
 
-        Map<String, Long> results = readOutput(3, 5_000);
+        Map<String, Long> results = readOutput(OUTPUT_TOPIC, 3, 5_000);
 
         System.out.println("results=" + results);
 
         assertEquals(Set.of(12L, 5L, 4L), results.values().stream().collect(Collectors.toSet()));
     }
 
-    private void sendInput(String key, String value) {
-        producer.send(new ProducerRecord<>(INPUT_TOPIC, key, value));
+    private void sendInput(String topic, String key, String value) {
+        producer.send(new ProducerRecord<>(topic, key, value));
         producer.flush();
     }
 
-    private Map<String, Long> readOutput(int expectedKeys, long timeoutMillis) {
+    private Map<String, Long> readOutput(String topic, int expectedKeys, long timeoutMillis) {
+
+        consumer.subscribe(List.of(topic));
+
         Map<String, Long> results = new HashMap<>();
         long start = System.currentTimeMillis();
 
@@ -104,6 +106,9 @@ public class SolutionTest {
                 results.put(record.key(), record.value());
             }
         }
+
+        consumer.unsubscribe();
+
         return results;
     }
 }

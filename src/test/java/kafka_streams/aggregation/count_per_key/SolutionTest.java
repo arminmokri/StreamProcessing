@@ -58,7 +58,6 @@ public class SolutionTest {
         consumerProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         consumerProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, LongDeserializer.class.getName());
         consumer = new KafkaConsumer<>(consumerProps);
-        consumer.subscribe(List.of(OUTPUT_TOPIC));
     }
 
     @AfterAll
@@ -74,13 +73,13 @@ public class SolutionTest {
     @Test
     public void testDefaultCase() {
 
-        sendInput("A", "x");
-        sendInput("A", "x");
-        sendInput("A", "x");
-        sendInput("B", "x");
-        sendInput("B", "x");
+        sendInput(INPUT_TOPIC, "A", "x");
+        sendInput(INPUT_TOPIC, "A", "x");
+        sendInput(INPUT_TOPIC, "A", "x");
+        sendInput(INPUT_TOPIC, "B", "x");
+        sendInput(INPUT_TOPIC, "B", "x");
 
-        Map<String, Long> results = readOutput(2, 5_000);
+        Map<String, Long> results = readOutput(OUTPUT_TOPIC, 2, 5_000);
 
         System.out.println("results=" + results);
 
@@ -88,12 +87,15 @@ public class SolutionTest {
         assertEquals(2L, results.get("B"));
     }
 
-    private void sendInput(String key, String value) {
-        producer.send(new ProducerRecord<>(INPUT_TOPIC, key, value));
+    private static void sendInput(String topic, String key, String value) {
+        producer.send(new ProducerRecord<>(topic, key, value));
         producer.flush();
     }
 
-    private Map<String, Long> readOutput(int expectedKeys, long timeoutMillis) {
+    private Map<String, Long> readOutput(String topic, int expectedKeys, long timeoutMillis) {
+
+        consumer.subscribe(List.of(topic));
+
         Map<String, Long> results = new HashMap<>();
         long start = System.currentTimeMillis();
 
@@ -103,6 +105,9 @@ public class SolutionTest {
                 results.put(record.key(), record.value());
             }
         }
+
+        consumer.unsubscribe();
+
         return results;
     }
 }

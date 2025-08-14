@@ -57,7 +57,6 @@ public class SolutionTest {
         consumerProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         consumerProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         consumer = new KafkaConsumer<>(consumerProps);
-        consumer.subscribe(List.of(OUTPUT_TOPIC));
     }
 
     @AfterAll
@@ -72,12 +71,12 @@ public class SolutionTest {
 
     @Test
     public void testDefaultCase() {
-        sendInput(null, "{\"user\": \"alice\", \"amount\": 50.0}");
-        sendInput(null, "{\"user\": \"alice\", \"amount\": 20.0}");
-        sendInput(null, "{\"user\": \"bob\",   \"amount\": 30.0}");
-        sendInput(null, "{\"user\": \"alice\", \"amount\": 10.0}");
+        sendInput(INPUT_TOPIC, null, "{\"user\": \"alice\", \"amount\": 50.0}");
+        sendInput(INPUT_TOPIC, null, "{\"user\": \"alice\", \"amount\": 20.0}");
+        sendInput(INPUT_TOPIC, null, "{\"user\": \"bob\",   \"amount\": 30.0}");
+        sendInput(INPUT_TOPIC, null, "{\"user\": \"alice\", \"amount\": 10.0}");
 
-        Map<String, String> results = readOutput(4, 5_000);
+        Map<String, String> results = readOutput(OUTPUT_TOPIC, 4, 5_000);
 
         System.out.println("results=" + results);
 
@@ -85,12 +84,15 @@ public class SolutionTest {
         assertEquals(30d, Double.parseDouble(results.get("bob")));
     }
 
-    private void sendInput(String key, String value) {
-        producer.send(new ProducerRecord<>(INPUT_TOPIC, key, value));
+    private void sendInput(String topic, String key, String value) {
+        producer.send(new ProducerRecord<>(topic, key, value));
         producer.flush();
     }
 
-    private Map<String, String> readOutput(int expectedKeys, long timeoutMillis) {
+    private Map<String, String> readOutput(String topic, int expectedKeys, long timeoutMillis) {
+
+        consumer.subscribe(List.of(topic));
+
         Map<String, String> results = new HashMap<>();
         long start = System.currentTimeMillis();
 
@@ -100,6 +102,9 @@ public class SolutionTest {
                 results.put(record.key(), record.value());
             }
         }
+
+        consumer.unsubscribe();
+
         return results;
     }
 }
