@@ -1,5 +1,6 @@
 package kafka_streams.basics.filter_and_map_kafka_records;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.AdminClientConfig;
@@ -38,7 +39,11 @@ public class Solution {
 
         StreamsBuilder builder = new StreamsBuilder();
 
-        Consumed<String, UserEvent> consumed = Consumed.with(Serdes.String(), getSerde(UserEvent.class));
+        Consumed<String, UserEvent> consumed = Consumed.with(
+                Serdes.String(),
+                getSerde(new TypeReference<UserEvent>() {
+                })
+        );
         Produced<String, String> produced = Produced.with(Serdes.String(), Serdes.String());
 
         // input
@@ -136,7 +141,7 @@ public class Solution {
         return props;
     }
 
-    public static <T> Serde<T> getSerde(Class<T> type) {
+    public static <T> Serde<T> getSerde(TypeReference<T> typeRef) {
         ObjectMapper mapper = new ObjectMapper();
         return Serdes.serdeFrom(
                 (topic, data) -> {
@@ -149,7 +154,7 @@ public class Solution {
                 },
                 (topic, data) -> {
                     try {
-                        return mapper.readValue(new String(data, StandardCharsets.UTF_8), type);
+                        return mapper.readValue(new String(data, StandardCharsets.UTF_8), typeRef);
                     } catch (IOException e) {
                         System.err.println(e.getMessage());
                         return null;

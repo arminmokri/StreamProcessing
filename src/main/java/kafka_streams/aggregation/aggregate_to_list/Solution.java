@@ -1,4 +1,4 @@
-package kafka_streams.basics.stateful_transform;
+package kafka_streams.aggregation.aggregate_to_list;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,7 +8,10 @@ import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
-import org.apache.kafka.streams.*;
+import org.apache.kafka.streams.KafkaStreams;
+import org.apache.kafka.streams.StreamsBuilder;
+import org.apache.kafka.streams.StreamsConfig;
+import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.*;
 import org.apache.kafka.streams.state.KeyValueStore;
 
@@ -20,15 +23,8 @@ import java.util.*;
 
 public class Solution {
 
-    record Purchase(String user, Double amount) {
-        @Override
-        public String toString() {
-            return "Purchase{user='" + user + "', amount=" + amount + '}';
-        }
-    }
-
-    private static final String APPLICATION_ID = "stateful_transform" + "_" + UUID.randomUUID();
-    private static final String CLIENT_ID = "stateful_transform" + "_client";
+    private static final String APPLICATION_ID = "aggregate_to_list" + "_" + UUID.randomUUID();
+    private static final String CLIENT_ID = "aggregate_to_list" + "_client";
     public static final String BOOTSTRAP_SERVERS = "localhost:9092";
 
     private static Path STATE_DIR;
@@ -39,41 +35,57 @@ public class Solution {
 
         StreamsBuilder builder = new StreamsBuilder();
 
-        Consumed<String, Purchase> consumed = Consumed.with(
+        Consumed<String, List<String>> consumed = Consumed.with(
                 Serdes.String(),
-                getSerde(new TypeReference<Purchase>() {
+                getSerde(new TypeReference<List<String>>() {
                 })
         );
-        Produced<String, String> produced = Produced.with(Serdes.String(), Serdes.String());
+        Produced<String, List<String>> produced = Produced.with(
+                Serdes.String(),
+                getSerde(new TypeReference<List<String>>() {
+                })
+        );
+        Grouped<String, List<String>> grouped = Grouped.with(
+                Serdes.String(),
+                getSerde(new TypeReference<List<String>>() {
+                })
+        );
+        Materialized<String, List<String>, KeyValueStore<Bytes, byte[]>> materializedStore =
+                Materialized
+                        .<String, List<String>, KeyValueStore<Bytes, byte[]>>as("aggregate_to_list-store")
+                        .withKeySerde(Serdes.String())
+                        .withValueSerde(
+                                getSerde(new TypeReference<List<String>>() {
+                                })
+                        );
 
         // input
-        KStream<String, Purchase> inputKStream = builder
+        KStream<String, List<String>> inputKStream = builder
                 .stream(inputTopic, consumed)
                 .peek((key, value) -> {
                     if (Objects.nonNull(key) && Objects.nonNull(value)) {
                         System.out.println("input from topic -> key='" + key + "' value='" + value + "'");
                     }
                 });
-
         // transform
-        KTable<String, Double> userTotals = inputKStream
-                .filter((key, purchase) -> Objects.nonNull(purchase))
-                .map((key, value) -> KeyValue.pair(value.user(), value.amount()))
-                .groupByKey(Grouped.with(Serdes.String(), Serdes.Double()))
+
+        KTable<String, List<String>> kTableAgg = inputKStream
+                .groupByKey(grouped)
                 .aggregate(
-                        () -> 0.0d,
-                        (user, amount, total) -> total + amount,
-                        Materialized.<String, Double, KeyValueStore<Bytes, byte[]>>as("user-totals-store")
-                                .withKeySerde(Serdes.String())
-                                .withValueSerde(Serdes.Double())
+                        ArrayList::new, // Initializer
+                        (key, value, list) -> {
+                            list.addAll(value);
+                            return list;
+                        },
+                        materializedStore
                 );
-        KTable<String, String> userTotalsString = userTotals
-                .mapValues((total) -> String.format("%.2f", total));
 
         // output
-        userTotalsString.toStream()
+        kTableAgg
+                .toStream()
                 .peek((key, value) -> System.out.println("output to topic -> key='" + key + "' value='" + value + "'"))
                 .to(outputTopic, produced);
+
 
         return builder.build();
     }
@@ -142,7 +154,7 @@ public class Solution {
         props.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, 200); // faster commit for testing
 
         // For illustrative purposes we disable record caches.
-        props.put(StreamsConfig.STATESTORE_CACHE_MAX_BYTES_CONFIG, 0);
+        //props.put(StreamsConfig.STATESTORE_CACHE_MAX_BYTES_CONFIG, 0);
 
         // Use a temporary directory for storing state, which will be automatically removed after the test.
         props.put(StreamsConfig.STATE_DIR_CONFIG, STATE_DIR.toString());
