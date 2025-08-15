@@ -128,8 +128,8 @@ This repository provides categorized, real-world examples of **stream processing
 #### 5- [Aggregate to List](src/main/java/kafka_streams/aggregation/aggregate_to_list) 📋
 
 ### 3. Joins
-#### 1- [KStream-KStream Join](src/main/java/kafka_streams/joins/stream_stream_join) 🔀❌
-#### 2- [KStream-Table Join](src/main/java/kafka_streams/joins/stream_table_join) 🪢❌
+#### 1- [KStream-KStream Join](src/main/java/kafka_streams/joins/kstream_kstream_join) 🔀
+#### 2- [KStream-KTable Join](src/main/java/kafka_streams/joins/kstream_ktable_join) 🪢❌
 #### 3- [Windowed Joins](src/main/java/kafka_streams/joins/windowed_join) ⏳❌
 #### 4- [Left Join](src/main/java/kafka_streams/joins/left_join) 🧩❌
 #### 5- [Outer Join](src/main/java/kafka_streams/joins/outer_join) 🌐❌
