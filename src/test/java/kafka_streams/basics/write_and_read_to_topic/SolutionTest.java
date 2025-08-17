@@ -22,8 +22,8 @@ import java.util.Properties;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SolutionTest {
-    private static final String INPUT_TOPIC = "write_and_read_to_topic" + "_input";
-    private static final String OUTPUT_TOPIC = "write_and_read_to_topic" + "_output";
+    private static final String INPUT_TOPIC = Solution.APPLICATION_NAME + "_input";
+    private static final String OUTPUT_TOPIC = Solution.APPLICATION_NAME + "_output";
 
     private static Solution solution;
     private static KafkaProducer<String, String> producer;

@@ -17,8 +17,9 @@ import java.util.*;
 
 public class Solution {
 
-    private static final String APPLICATION_ID = "group_by_key_and_count" + "_" + UUID.randomUUID();
-    private static final String CLIENT_ID = "group_by_key_and_count" + "_client";
+    public static final String APPLICATION_NAME = "group_by_key_and_count";
+    private static final String APPLICATION_ID = APPLICATION_NAME + "_" + UUID.randomUUID();
+    private static final String CLIENT_ID = APPLICATION_NAME + "_client";
     public static final String BOOTSTRAP_SERVERS = "localhost:9092";
 
     private static Path STATE_DIR;

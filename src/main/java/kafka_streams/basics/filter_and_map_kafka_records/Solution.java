@@ -27,8 +27,9 @@ public class Solution {
         }
     }
 
-    private static final String APPLICATION_ID = "word_count" + "_" + UUID.randomUUID();
-    private static final String CLIENT_ID = "word_count" + "_client";
+    public static final String APPLICATION_NAME = "filter_and_map_kafka_records";
+    private static final String APPLICATION_ID = APPLICATION_NAME + "_" + UUID.randomUUID();
+    private static final String CLIENT_ID = APPLICATION_NAME + "_client";
     public static final String BOOTSTRAP_SERVERS = "localhost:9092";
 
     private static Path STATE_DIR;
