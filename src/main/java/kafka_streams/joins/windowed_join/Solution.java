@@ -1,4 +1,4 @@
-package kafka_streams.joins.kstream_ktable_join;
+package kafka_streams.joins.windowed_join;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,46 +17,42 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.*;
 
 public class Solution {
 
-    record Customer(String id, String name, String phoneNumber, String address) {
-
-        @Override
-        public String toString() {
-            return "Customer{" +
-                    "id='" + id + '\'' +
-                    ", name='" + name + '\'' +
-                    ", phoneNumber='" + phoneNumber + '\'' +
-                    ", address='" + address + '\'' +
-                    '}';
-        }
-    }
-
-    record Order(String id, String customerId, Integer amount) {
+    record Order(String id, List<String> items) {
 
         @Override
         public String toString() {
             return "Order{" +
                     "id='" + id + '\'' +
-                    ", customerId='" + customerId + '\'' +
+                    ", items=" + items +
+                    '}';
+        }
+    }
+
+    record Payment(String id, String orderId, Integer amount) {
+
+        @Override
+        public String toString() {
+            return "Payment{" +
+                    "id='" + id + '\'' +
+                    ", orderId='" + orderId + '\'' +
                     ", amount=" + amount +
                     '}';
         }
     }
 
-    record EnrichedOrder(String id, Integer amount, String customerId, String name, String phoneNumber,
-                         String address) {
+    record EnrichedOrder(String id, List<String> items, String paymentId, Integer amount) {
 
-        EnrichedOrder(Order order, Customer customer) {
+        EnrichedOrder(Order order, Payment payment) {
             this(
                     order.id(),
-                    order.amount(),
-                    customer.id(),
-                    customer.name(),
-                    customer.phoneNumber(),
-                    customer.address()
+                    order.items(),
+                    payment.id(),
+                    payment.amount()
             );
         }
 
@@ -64,11 +60,9 @@ public class Solution {
         public String toString() {
             return "EnrichedOrder{" +
                     "id='" + id + '\'' +
+                    ", items=" + items +
+                    ", paymentId='" + paymentId + '\'' +
                     ", amount=" + amount +
-                    ", customerId='" + customerId + '\'' +
-                    ", name='" + name + '\'' +
-                    ", phoneNumber='" + phoneNumber + '\'' +
-                    ", address='" + address + '\'' +
                     '}';
         }
     }
@@ -86,14 +80,14 @@ public class Solution {
 
         StreamsBuilder builder = new StreamsBuilder();
 
-        Consumed<String, Customer> consumedKTableCustomer = Consumed.with(
-                Serdes.String(),
-                getSerde(new TypeReference<Customer>() {
-                })
-        );
         Consumed<String, Order> consumedKStreamOrder = Consumed.with(
                 Serdes.String(),
                 getSerde(new TypeReference<Order>() {
+                })
+        );
+        Consumed<String, Payment> consumedKStreamPayment = Consumed.with(
+                Serdes.String(),
+                getSerde(new TypeReference<Payment>() {
                 })
         );
         Produced<String, EnrichedOrder> produced = Produced.with(
@@ -101,21 +95,27 @@ public class Solution {
                 getSerde(new TypeReference<EnrichedOrder>() {
                 })
         );
-        ValueJoiner<Order, Customer, EnrichedOrder> valueJoiner = (order, customer) -> new EnrichedOrder(order, customer);
-        Joined<String, Order, Customer> joined = Joined.with(
+        ValueJoiner<Order, Payment, EnrichedOrder> valueJoiner = (order, payment) -> new EnrichedOrder(order, payment);
+        JoinWindows joinWindows = JoinWindows.ofTimeDifferenceWithNoGrace(Duration.ofSeconds(5));
+        StreamJoined<String, Order, Payment> streamJoined = StreamJoined.with(
                 Serdes.String(),
                 getSerde(new TypeReference<Order>() {
                 }),
-                getSerde(new TypeReference<Customer>() {
+                getSerde(new TypeReference<Payment>() {
                 })
         );
 
         // input
-        KTable<String, Customer> inputAKTableCustomer = builder
-                .table(inputTopicA, consumedKTableCustomer);
+        KStream<String, Order> inputAKStreamOrder = builder
+                .stream(inputTopicA, consumedKStreamOrder)
+                .peek((key, value) -> {
+                    if (Objects.nonNull(key) && Objects.nonNull(value)) {
+                        System.out.println("input from topic(" + inputTopicA + ") -> key='" + key + "' value='" + value + "'");
+                    }
+                });
 
-        KStream<String, Order> inputBKStreamOrder = builder
-                .stream(inputTopicB, consumedKStreamOrder)
+        KStream<String, Payment> inputBKStreamPayment = builder
+                .stream(inputTopicB, consumedKStreamPayment)
                 .peek((key, value) -> {
                     if (Objects.nonNull(key) && Objects.nonNull(value)) {
                         System.out.println("input from topic(" + inputTopicB + ") -> key='" + key + "' value='" + value + "'");
@@ -123,8 +123,8 @@ public class Solution {
                 });
 
         // transform
-        KStream<String, EnrichedOrder> joinedStream = inputBKStreamOrder
-                .join(inputAKTableCustomer, valueJoiner, joined);
+        KStream<String, EnrichedOrder> joinedStream = inputAKStreamOrder
+                .join(inputBKStreamPayment, valueJoiner, joinWindows, streamJoined);
 
         // output
         joinedStream
