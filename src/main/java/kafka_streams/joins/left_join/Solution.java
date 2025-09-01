@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.Duration;
 import java.util.*;
 
 public class Solution {
@@ -47,12 +46,12 @@ public class Solution {
 
     record EnrichOrder(String id, String customerId, List<String> items, String name) {
 
-         EnrichOrder(Customer customer, Order order) {
+        EnrichOrder(Customer customer, Order order) {
             this(
                     order.id,
                     order.customerId,
                     order.items,
-                    customer != null?  customer.name : "unknown"
+                    customer != null ? customer.name : "unknown"
 
             );
         }
@@ -97,7 +96,7 @@ public class Solution {
                 getSerde(new TypeReference<EnrichOrder>() {
                 })
         );
-        ValueJoiner<  Order,Customer,  EnrichOrder> valueJoiner = (order, customer) -> new EnrichOrder( customer,order);
+        ValueJoiner<Order, Customer, EnrichOrder> valueJoiner = (order, customer) -> new EnrichOrder(customer, order);
         Joined<String, Order, Customer> streamJoined = Joined.with(
                 Serdes.String(),
                 getSerde(new TypeReference<Order>() {
@@ -124,7 +123,11 @@ public class Solution {
 
         // output
         joinedStream
-                .peek((key, value) -> System.out.println("output to topic(" + outputTopic + ") -> key='" + key + "' value='" + value + "'"))
+                .peek((key, value) -> {
+                    if (Objects.nonNull(key) && Objects.nonNull(value)) {
+                        System.out.println("output to topic(" + outputTopic + ") -> key='" + key + "' value='" + value + "'");
+                    }
+                })
                 .to(outputTopic, produced);
 
         return builder.build();

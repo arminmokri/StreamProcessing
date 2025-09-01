@@ -66,8 +66,13 @@ public class Solution {
                 );
 
         // output
-        kTableSum.toStream()
-                .peek((key, value) -> System.out.println("output to topic(" + outputTopic + ") -> key='" + key + "' value='" + value + "'"))
+        kTableSum
+                .toStream()
+                .peek((key, value) -> {
+                    if (Objects.nonNull(key) && Objects.nonNull(value)) {
+                        System.out.println("output to topic(" + outputTopic + ") -> key='" + key + "' value='" + value + "'");
+                    }
+                })
                 .to(outputTopic, produced);
 
         return builder.build();

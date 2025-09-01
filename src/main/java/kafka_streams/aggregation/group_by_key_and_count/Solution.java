@@ -49,8 +49,13 @@ public class Solution {
                 .count();
 
         // output
-        counts.toStream()
-                .peek((key, value) -> System.out.println("output to topic(" + outputTopic + ") -> key='" + key + "' value='" + value + "'"))
+        counts
+                .toStream()
+                .peek((key, value) -> {
+                    if (Objects.nonNull(key) && Objects.nonNull(value)) {
+                        System.out.println("output to topic(" + outputTopic + ") -> key='" + key + "' value='" + value + "'");
+                    }
+                })
                 .to(outputTopic, produced);
 
         return builder.build();

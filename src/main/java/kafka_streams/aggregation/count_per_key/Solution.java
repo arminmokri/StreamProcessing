@@ -51,7 +51,11 @@ public class Solution {
         // output
         kTableCounted
                 .toStream()
-                .peek((key, value) -> System.out.println("output to topic(" + outputTopic + ") -> key='" + key + "' value='" + value + "'"))
+                .peek((key, value) -> {
+                    if (Objects.nonNull(key) && Objects.nonNull(value)) {
+                        System.out.println("output to topic(" + outputTopic + ") -> key='" + key + "' value='" + value + "'");
+                    }
+                })
                 .to(outputTopic, produced);
 
         return builder.build();
