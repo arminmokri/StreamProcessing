@@ -97,7 +97,7 @@ public class SolutionTest {
 
         consumer.subscribe(List.of(topic));
 
-        Map<String, Long> results = new HashMap<>();
+        Map<String, Long> results = new LinkedHashMap<>();
         long start = System.currentTimeMillis();
 
         while (System.currentTimeMillis() - start < timeoutMillis && results.size() < expectedKeys) {

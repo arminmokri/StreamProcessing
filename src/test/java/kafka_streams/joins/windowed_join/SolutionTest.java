@@ -14,7 +14,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -149,7 +149,7 @@ public class SolutionTest {
 
         consumer.subscribe(List.of(topic));
 
-        Map<String, String> results = new HashMap<>();
+        Map<String, String> results = new LinkedHashMap<>();
         long start = System.currentTimeMillis();
 
         while (System.currentTimeMillis() - start < timeoutMillis && results.size() < expectedKeys) {
