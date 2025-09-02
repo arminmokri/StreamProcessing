@@ -80,6 +80,7 @@ public class Solution {
 
         StreamsBuilder builder = new StreamsBuilder();
 
+        // variable
         Consumed<String, Order> consumedKStreamOrder = Consumed.with(
                 Serdes.String(),
                 getSerde(new TypeReference<Order>() {

@@ -31,6 +31,7 @@ public class Solution {
 
         StreamsBuilder builder = new StreamsBuilder();
 
+        // variable
         Consumed<String, String> consumed = Consumed.with(Serdes.String(), Serdes.String());
         Produced<String, Long> produced = Produced.with(Serdes.String(), Serdes.Long());
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss")

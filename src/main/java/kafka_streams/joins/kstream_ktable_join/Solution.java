@@ -86,6 +86,7 @@ public class Solution {
 
         StreamsBuilder builder = new StreamsBuilder();
 
+        // variable
         Consumed<String, Customer> consumedKTableCustomer = Consumed.with(
                 Serdes.String(),
                 getSerde(new TypeReference<Customer>() {

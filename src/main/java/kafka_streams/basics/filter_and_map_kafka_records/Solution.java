@@ -40,6 +40,7 @@ public class Solution {
 
         StreamsBuilder builder = new StreamsBuilder();
 
+        // variable
         Consumed<String, UserEvent> consumed = Consumed.with(
                 Serdes.String(),
                 getSerde(new TypeReference<UserEvent>() {

@@ -35,6 +35,7 @@ public class Solution {
 
         StreamsBuilder builder = new StreamsBuilder();
 
+        // variable
         Consumed<String, String> consumed = Consumed.with(Serdes.String(), Serdes.String());
         Produced<String, String> produced = Produced.with(Serdes.String(), Serdes.String());
         ValueJoiner<String, String, String> valueJoiner = (value1, value2) -> value1 + "-" + value2;

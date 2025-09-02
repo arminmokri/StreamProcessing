@@ -36,6 +36,7 @@ public class Solution {
 
         StreamsBuilder builder = new StreamsBuilder();
 
+        // variable
         Consumed<String, List<String>> consumed = Consumed.with(
                 Serdes.String(),
                 getSerde(new TypeReference<List<String>>() {
