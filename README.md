@@ -132,7 +132,7 @@ This repository provides categorized, real-world examples of **stream processing
 #### 2- [KStream-KTable Join](src/main/java/kafka_streams/joins/kstream_ktable_join) 🪢
 #### 3- [Windowed Joins](src/main/java/kafka_streams/joins/windowed_join) ⏳
 #### 4- [Left Join](src/main/java/kafka_streams/joins/left_join) 🧩
-#### 5- [Outer Join](src/main/java/kafka_streams/joins/outer_join) 🌐❌
+#### 5- [Outer Join](src/main/java/kafka_streams/joins/outer_join) 🌐
 
 ### 4. Windowing
 #### 1- [Time Windows](src/main/java/kafka_streams/windowing/time_window) ⌛❌
