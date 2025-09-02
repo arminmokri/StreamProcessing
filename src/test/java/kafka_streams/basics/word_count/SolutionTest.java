@@ -15,10 +15,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -72,8 +69,8 @@ public class SolutionTest {
 
     @Test
     public void testDefaultCase() {
-        sendInput(INPUT_TOPIC, null, "hello kafka hello streams");
-        sendInput(INPUT_TOPIC, null, "hello again");
+        sendInput(INPUT_TOPIC, null, "hello kafka hello streams", null);
+        sendInput(INPUT_TOPIC, null, "hello again", null);
 
         Map<String, Long> results = readOutput(OUTPUT_TOPIC, 4, 5_000);
 
@@ -85,8 +82,16 @@ public class SolutionTest {
         assertEquals(1L, results.get("again"));
     }
 
-    private void sendInput(String topic, String key, String value) {
-        producer.send(new ProducerRecord<>(topic, key, value));
+    private void sendInput(String topic, String key, String value, Long timestamp) {
+
+        ProducerRecord<String, String> record;
+        if (Objects.isNull(timestamp)) {
+            record = new ProducerRecord<>(topic, key, value);
+        } else {
+            record = new ProducerRecord<>(topic, null, timestamp, key, value);
+        }
+
+        producer.send(record);
         producer.flush();
     }
 

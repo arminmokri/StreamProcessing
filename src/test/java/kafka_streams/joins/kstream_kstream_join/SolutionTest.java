@@ -14,10 +14,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -76,11 +73,11 @@ public class SolutionTest {
 
     @Test
     public void testDefaultCase() {
-        sendInput(INPUT_TOPIC_A, "key1", "A1");
-        sendInput(INPUT_TOPIC_A, "key2", "A2");
+        sendInput(INPUT_TOPIC_A, "key1", "A1", null);
+        sendInput(INPUT_TOPIC_A, "key2", "A2", null);
 
-        sendInput(INPUT_TOPIC_B, "key1", "B1");
-        sendInput(INPUT_TOPIC_B, "key2", "B2");
+        sendInput(INPUT_TOPIC_B, "key1", "B1", null);
+        sendInput(INPUT_TOPIC_B, "key2", "B2", null);
 
         Map<String, String> results = readOutput(OUTPUT_TOPIC, 2, 5_000);
 
@@ -90,8 +87,16 @@ public class SolutionTest {
         assertEquals("A2-B2", results.get("key2"));
     }
 
-    private static void sendInput(String topic, String key, String value) {
-        producer.send(new ProducerRecord<>(topic, key, value));
+    private void sendInput(String topic, String key, String value, Long timestamp) {
+
+        ProducerRecord<String, String> record;
+        if (Objects.isNull(timestamp)) {
+            record = new ProducerRecord<>(topic, key, value);
+        } else {
+            record = new ProducerRecord<>(topic, null, timestamp, key, value);
+        }
+
+        producer.send(record);
         producer.flush();
     }
 

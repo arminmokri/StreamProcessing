@@ -14,10 +14,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -77,49 +74,26 @@ public class SolutionTest {
 
     @Test
     public void testDefaultCase() {
-        // t=0
+
+        long baseTime = System.currentTimeMillis();
+
+        // t=0s
         // Order(String id, List<String> items)
-        sendInput(INPUT_TOPIC_A, "1000", "{\"id\": \"1000\", \"items\": [\"shoes\", \"bag\"]}");
+        sendInput(INPUT_TOPIC_A, "1000", "{\"id\": \"1000\", \"items\": [\"shoes\", \"bag\"]}", baseTime);
 
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
-        // t=3
+        // t=3s
         // Payment(String id, String orderId, Integer amount)
-        sendInput(INPUT_TOPIC_B, "1000", "{\"id\": \"2000\", \"orderId\": \"1000\", \"amount\": 100}");
+        sendInput(INPUT_TOPIC_B, "1000", "{\"id\": \"2000\", \"orderId\": \"1000\", \"amount\": 100}", baseTime + 3000);
 
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        // t=6s
+        sendInput(INPUT_TOPIC_A, "1001", "{\"id\": \"1001\", \"items\": [\"iPhone\", \"AirPods\"]}", baseTime + 6000);
+        sendInput(INPUT_TOPIC_B, "1001", "{\"id\": \"2001\", \"orderId\": \"1001\", \"amount\": 2000}", baseTime + 6000);
 
+        // t=7s
+        sendInput(INPUT_TOPIC_A, "1002", "{\"id\": \"1002\", \"items\": [\"Galaxy\"]}", baseTime + 7000);
 
-        // t=6
-        sendInput(INPUT_TOPIC_A, "1001", "{\"id\": \"1001\", \"items\": [\"iPhone\", \"AirPods\"]}");
-        sendInput(INPUT_TOPIC_B, "1001", "{\"id\": \"2001\", \"orderId\": \"1001\", \"amount\": 2000}");
-
-
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
-        // t=7
-        sendInput(INPUT_TOPIC_A, "1002", "{\"id\": \"1002\", \"items\": [\"Galaxy\"]}");
-
-        try {
-            Thread.sleep(6000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
-        // t=13
-        sendInput(INPUT_TOPIC_B, "1002", "{\"id\": \"2001\", \"orderId\": \"1002\", \"amount\": 500}");
+        // t=13s
+        sendInput(INPUT_TOPIC_B, "1002", "{\"id\": \"2001\", \"orderId\": \"1002\", \"amount\": 500}", baseTime + 13000);
 
 
         Map<String, String> results = readOutput(OUTPUT_TOPIC, 2, 5_000);
@@ -140,8 +114,16 @@ public class SolutionTest {
 
     }
 
-    private static void sendInput(String topic, String key, String value) {
-        producer.send(new ProducerRecord<>(topic, key, value));
+    private void sendInput(String topic, String key, String value, Long timestamp) {
+
+        ProducerRecord<String, String> record;
+        if (Objects.isNull(timestamp)) {
+            record = new ProducerRecord<>(topic, key, value);
+        } else {
+            record = new ProducerRecord<>(topic, null, timestamp, key, value);
+        }
+
+        producer.send(record);
         producer.flush();
     }
 

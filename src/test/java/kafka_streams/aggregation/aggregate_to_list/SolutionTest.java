@@ -18,10 +18,7 @@ import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -75,10 +72,10 @@ public class SolutionTest {
 
     @Test
     public void testDefaultCase() {
-        sendInput(INPUT_TOPIC, "A", "[\"1\",\"2\"]");
-        sendInput(INPUT_TOPIC, "B", "[\"A\",\"B\"]");
-        sendInput(INPUT_TOPIC, "A", "[\"3\"]");
-        sendInput(INPUT_TOPIC, "B", "[\"C\"]");
+        sendInput(INPUT_TOPIC, "A", "[\"1\",\"2\"]", null);
+        sendInput(INPUT_TOPIC, "B", "[\"A\",\"B\"]", null);
+        sendInput(INPUT_TOPIC, "A", "[\"3\"]", null);
+        sendInput(INPUT_TOPIC, "B", "[\"C\"]", null);
 
         Map<String, String> results = readOutput(OUTPUT_TOPIC, 2, 5_000);
 
@@ -111,8 +108,16 @@ public class SolutionTest {
         assertEquals(List.of("A", "B", "C"), listB);
     }
 
-    private static void sendInput(String topic, String key, String value) {
-        producer.send(new ProducerRecord<>(topic, key, value));
+    private void sendInput(String topic, String key, String value, Long timestamp) {
+
+        ProducerRecord<String, String> record;
+        if (Objects.isNull(timestamp)) {
+            record = new ProducerRecord<>(topic, key, value);
+        } else {
+            record = new ProducerRecord<>(topic, null, timestamp, key, value);
+        }
+
+        producer.send(record);
         producer.flush();
     }
 

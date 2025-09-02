@@ -14,10 +14,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -79,12 +76,12 @@ public class SolutionTest {
 
 
         // Order(String id, String customerId, List<String> items)
-        sendInput(INPUT_TOPIC_B, "1000", "{\"id\": \"2000\", \"customerId\": \"1000\", \"items\": [\"iPhone\", \"AirPods\"]}");
-        sendInput(INPUT_TOPIC_B, "1002", "{\"id\": \"2002\", \"customerId\": \"1002\", \"items\": [\"Video Player\"]}");
+        sendInput(INPUT_TOPIC_B, "1000", "{\"id\": \"2000\", \"customerId\": \"1000\", \"items\": [\"iPhone\", \"AirPods\"]}", null);
+        sendInput(INPUT_TOPIC_B, "1002", "{\"id\": \"2002\", \"customerId\": \"1002\", \"items\": [\"Video Player\"]}", null);
 
         // Customer(String id, String name)
-        sendInput(INPUT_TOPIC_A, "1000", "{\"id\": \"1000\", \"name\": \"Alice\"}");
-        sendInput(INPUT_TOPIC_A, "1001", "{\"id\": \"1001\", \"name\": \"Bob\"}");
+        sendInput(INPUT_TOPIC_A, "1000", "{\"id\": \"1000\", \"name\": \"Alice\"}", null);
+        sendInput(INPUT_TOPIC_A, "1001", "{\"id\": \"1001\", \"name\": \"Bob\"}", null);
 
         Map<String, String> results = readOutput(OUTPUT_TOPIC, 3, 5_000);
 
@@ -104,8 +101,16 @@ public class SolutionTest {
         );
     }
 
-    private static void sendInput(String topic, String key, String value) {
-        producer.send(new ProducerRecord<>(topic, key, value));
+    private void sendInput(String topic, String key, String value, Long timestamp) {
+
+        ProducerRecord<String, String> record;
+        if (Objects.isNull(timestamp)) {
+            record = new ProducerRecord<>(topic, key, value);
+        } else {
+            record = new ProducerRecord<>(topic, null, timestamp, key, value);
+        }
+
+        producer.send(record);
         producer.flush();
     }
 

@@ -14,10 +14,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -77,12 +74,12 @@ public class SolutionTest {
     @Test
     public void testDefaultCase() {
         // Customer(String id, String name, String phoneNumber, String address)
-        sendInput(INPUT_TOPIC_A, "1000", "{\"id\": \"1000\", \"name\": \"Alice\", \"phoneNumber\": \"123456\", \"address\": \"Toronto\"}");
-        sendInput(INPUT_TOPIC_A, "1001", "{\"id\": \"1001\", \"name\": \"Bob\", \"phoneNumber\": \"123789\", \"address\": \"Ottawa\"}");
+        sendInput(INPUT_TOPIC_A, "1000", "{\"id\": \"1000\", \"name\": \"Alice\", \"phoneNumber\": \"123456\", \"address\": \"Toronto\"}", null);
+        sendInput(INPUT_TOPIC_A, "1001", "{\"id\": \"1001\", \"name\": \"Bob\", \"phoneNumber\": \"123789\", \"address\": \"Ottawa\"}", null);
 
         // Order(String id, String customerId, Integer amount)
-        sendInput(INPUT_TOPIC_B, "1000", "{\"id\": \"5000\", \"customerId\": \"1000\", \"amount\": 100}");
-        sendInput(INPUT_TOPIC_B, "1001", "{\"id\": \"5001\", \"customerId\": \"1001\", \"amount\": 200}");
+        sendInput(INPUT_TOPIC_B, "1000", "{\"id\": \"5000\", \"customerId\": \"1000\", \"amount\": 100}", null);
+        sendInput(INPUT_TOPIC_B, "1001", "{\"id\": \"5001\", \"customerId\": \"1001\", \"amount\": 200}", null);
 
         Map<String, String> results = readOutput(OUTPUT_TOPIC, 2, 5_000);
 
@@ -98,8 +95,16 @@ public class SolutionTest {
         );
     }
 
-    private static void sendInput(String topic, String key, String value) {
-        producer.send(new ProducerRecord<>(topic, key, value));
+    private void sendInput(String topic, String key, String value, Long timestamp) {
+
+        ProducerRecord<String, String> record;
+        if (Objects.isNull(timestamp)) {
+            record = new ProducerRecord<>(topic, key, value);
+        } else {
+            record = new ProducerRecord<>(topic, null, timestamp, key, value);
+        }
+
+        producer.send(record);
         producer.flush();
     }
 

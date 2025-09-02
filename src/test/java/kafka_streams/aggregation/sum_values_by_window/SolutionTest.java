@@ -70,16 +70,17 @@ public class SolutionTest {
 
     @Test
     public void testDefaultCase() {
-        sendInput(INPUT_TOPIC, "A", "5");
-        sendInput(INPUT_TOPIC, "A", "7");
-        sendInput(INPUT_TOPIC, "B", "2");
-        sendInput(INPUT_TOPIC, "B", "3");
-        try {
-            Thread.sleep(5001);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        sendInput(INPUT_TOPIC, "A", "4");
+
+        long baseTime = System.currentTimeMillis();
+
+        // t=0s
+        sendInput(INPUT_TOPIC, "A", "5", baseTime);
+        sendInput(INPUT_TOPIC, "A", "7", baseTime);
+        sendInput(INPUT_TOPIC, "B", "2", baseTime);
+        sendInput(INPUT_TOPIC, "B", "3", baseTime);
+
+        // t=5001s
+        sendInput(INPUT_TOPIC, "A", "4", baseTime + 5001);
 
         Map<String, Long> results = readOutput(OUTPUT_TOPIC, 3, 5_000);
 
@@ -88,8 +89,16 @@ public class SolutionTest {
         assertEquals(Set.of(12L, 5L, 4L), results.values().stream().collect(Collectors.toSet()));
     }
 
-    private void sendInput(String topic, String key, String value) {
-        producer.send(new ProducerRecord<>(topic, key, value));
+    private void sendInput(String topic, String key, String value, Long timestamp) {
+
+        ProducerRecord<String, String> record;
+        if (Objects.isNull(timestamp)) {
+            record = new ProducerRecord<>(topic, key, value);
+        } else {
+            record = new ProducerRecord<>(topic, null, timestamp, key, value);
+        }
+
+        producer.send(record);
         producer.flush();
     }
 
