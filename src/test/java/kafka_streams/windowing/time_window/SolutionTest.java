@@ -93,7 +93,7 @@ public class SolutionTest {
 
         Map<String, Long> totals = new HashMap<>();
         results.forEach((k, v) -> {
-            String userId = k.split("/")[0];
+            String userId = k.split("@")[0];
             totals.merge(userId, v, Long::sum);
         });
 

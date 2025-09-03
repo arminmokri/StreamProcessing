@@ -15,6 +15,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class Solution {
@@ -33,11 +35,15 @@ public class Solution {
         StreamsBuilder builder = new StreamsBuilder();
 
         // variable
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss")
+                .withZone(ZoneId.systemDefault());
         Consumed<String, String> consumed = Consumed.with(Serdes.String(), Serdes.String());
         Produced<String, Long> produced = Produced.with(Serdes.String(), Serdes.Long());
         TimeWindows timeWindows = TimeWindows.ofSizeWithNoGrace(Duration.ofSeconds(5));
         KeyValueMapper<Windowed<String>, Long, KeyValue<String, Long>> keyValueMapper = (key, value) -> KeyValue.pair(
-                key.key() + "/" + key.window().startTime() + "-" + key.window().endTime(),
+                key.key() + "@"
+                        + formatter.format(key.window().startTime()) + "-"
+                        + formatter.format(key.window().endTime()),
                 value
         );
 
