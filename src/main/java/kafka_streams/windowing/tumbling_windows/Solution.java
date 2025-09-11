@@ -1,4 +1,4 @@
-package kafka_streams.windowing.time_window;
+package kafka_streams.windowing.tumbling_windows;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,7 +21,7 @@ import java.util.*;
 
 public class Solution {
 
-    public static final String APPLICATION_NAME = "time_window";
+    public static final String APPLICATION_NAME = "tumbling_windows";
     private static final String APPLICATION_ID = APPLICATION_NAME + "_" + UUID.randomUUID();
     private static final String CLIENT_ID = APPLICATION_NAME + "_client";
     public static final String BOOTSTRAP_SERVERS = "localhost:9092";
@@ -39,7 +39,7 @@ public class Solution {
                 .withZone(ZoneId.systemDefault());
         Consumed<String, String> consumed = Consumed.with(Serdes.String(), Serdes.String());
         Produced<String, Long> produced = Produced.with(Serdes.String(), Serdes.Long());
-        TimeWindows timeWindows = TimeWindows.ofSizeWithNoGrace(Duration.ofSeconds(5));
+        TimeWindows tumblingWindows = TimeWindows.ofSizeWithNoGrace(Duration.ofSeconds(5));
         KeyValueMapper<Windowed<String>, Long, KeyValue<String, Long>> keyValueMapper = (key, value) -> KeyValue.pair(
                 key.key() + "@"
                         + formatter.format(key.window().startTime()) + "-"
@@ -59,7 +59,7 @@ public class Solution {
         // transform
         KTable<Windowed<String>, Long> userEventKTable = inputKStream
                 .groupByKey()
-                .windowedBy(timeWindows)
+                .windowedBy(tumblingWindows)
                 .count();
 
         // output

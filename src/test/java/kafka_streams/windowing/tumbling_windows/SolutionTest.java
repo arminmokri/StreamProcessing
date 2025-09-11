@@ -1,4 +1,4 @@
-package kafka_streams.windowing.time_window;
+package kafka_streams.windowing.tumbling_windows;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
