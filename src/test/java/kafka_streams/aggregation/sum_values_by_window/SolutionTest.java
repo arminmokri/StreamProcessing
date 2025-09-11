@@ -82,14 +82,19 @@ public class SolutionTest {
         // t=5001s
         sendInput(INPUT_TOPIC, "A", "4", baseTime + 5001);
 
-        Map<String, Long> results = readOutput(OUTPUT_TOPIC, 3, 5_000);
+        List<ConsumerRecord<String, Long>> results = readOutput(OUTPUT_TOPIC, 3, 5_000);
 
-        System.out.println("results=" + results);
+        String stringResult = results
+                .stream()
+                .map((record) -> record.key() + "=" + record.value())
+                .reduce((a, b) -> a + ", " + b).orElse("");
 
-        assertEquals(Set.of(12L, 5L, 4L), results.values().stream().collect(Collectors.toSet()));
+        System.out.println("results={" + stringResult + "}");
+
+        assertEquals(Set.of(12L, 5L, 4L), results.stream().map((record) -> record.value()).collect(Collectors.toSet()));
     }
 
-    private void sendInput(String topic, String key, String value, Long timestamp) {
+    private static void sendInput(String topic, String key, String value, Long timestamp) {
 
         ProducerRecord<String, String> record;
         if (Objects.isNull(timestamp)) {
@@ -102,17 +107,17 @@ public class SolutionTest {
         producer.flush();
     }
 
-    private Map<String, Long> readOutput(String topic, int expectedKeys, long timeoutMillis) {
+    private static List<ConsumerRecord<String, Long>> readOutput(String topic, int expectedKeys, long timeoutMillis) {
 
         consumer.subscribe(List.of(topic));
 
-        Map<String, Long> results = new LinkedHashMap<>();
+        List<ConsumerRecord<String, Long>> results = new LinkedList<>();
         long start = System.currentTimeMillis();
 
         while (System.currentTimeMillis() - start < timeoutMillis && (expectedKeys == 0 || results.size() < expectedKeys)) {
             ConsumerRecords<String, Long> records = consumer.poll(Duration.ofMillis(100));
             for (ConsumerRecord<String, Long> record : records) {
-                results.put(record.key(), record.value());
+                results.add(record);
             }
         }
 

@@ -14,7 +14,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -83,21 +86,27 @@ public class SolutionTest {
         sendInput(INPUT_TOPIC_A, "1000", "{\"id\": \"1000\", \"name\": \"Alice\"}", null);
         sendInput(INPUT_TOPIC_A, "1001", "{\"id\": \"1001\", \"name\": \"Bob\"}", null);
 
-        Map<String, String> results = readOutput(OUTPUT_TOPIC, 3, 5_000);
+        List<ConsumerRecord<String, String>> results = readOutput(OUTPUT_TOPIC, 3, 5_000);
 
-        System.out.println("results=" + results);
+        String stringResult = results
+                .stream()
+                .map((record) -> record.key() + "=" + record.value())
+                .reduce((a, b) -> a + ", " + b).orElse("");
+
+        System.out.println("results={" + stringResult + "}");
+
 
         assertEquals(
                 "{\"id\":\"2000\",\"customerId\":\"1000\",\"items\":[\"iPhone\",\"AirPods\"],\"name\":\"Alice\"}",
-                results.get("1000")
+                getValue(results, "1000")
         );
         assertEquals(
                 "{\"id\":null,\"customerId\":\"1001\",\"items\":[],\"name\":\"Bob\"}",
-                results.get("1001")
+                getValue(results, "1001")
         );
         assertEquals(
                 "{\"id\":\"2002\",\"customerId\":\"1002\",\"items\":[\"Video Player\"],\"name\":null}",
-                results.get("1002")
+                getValue(results, "1002")
         );
     }
 
@@ -114,22 +123,30 @@ public class SolutionTest {
         producer.flush();
     }
 
-    private static Map<String, String> readOutput(String topic, int expectedKeys, long timeoutMillis) {
+    private static List<ConsumerRecord<String, String>> readOutput(String topic, int expectedKeys, long timeoutMillis) {
 
         consumer.subscribe(List.of(topic));
 
-        Map<String, String> results = new LinkedHashMap<>();
+        List<ConsumerRecord<String, String>> results = new LinkedList<>();
         long start = System.currentTimeMillis();
 
         while (System.currentTimeMillis() - start < timeoutMillis && (expectedKeys == 0 || results.size() < expectedKeys)) {
             ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
             for (ConsumerRecord<String, String> record : records) {
-                results.put(record.key(), record.value());
+                results.add(record);
             }
         }
 
         consumer.unsubscribe();
 
         return results;
+    }
+
+    private static String getValue(List<ConsumerRecord<String, String>> results, String key) {
+        return results.stream()
+                .filter(record -> record.key().equals(key))
+                .reduce((first, second) -> second)
+                .map(record -> record.value())
+                .orElse(null);
     }
 }
