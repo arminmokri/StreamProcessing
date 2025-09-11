@@ -1,4 +1,4 @@
-package kafka_streams.windowing.session_window;
+package kafka_streams.windowing.session_windows;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,7 +21,7 @@ import java.util.*;
 
 public class Solution {
 
-    public static final String APPLICATION_NAME = "session_window";
+    public static final String APPLICATION_NAME = "session_windows";
     private static final String APPLICATION_ID = APPLICATION_NAME + "_" + UUID.randomUUID();
     private static final String CLIENT_ID = APPLICATION_NAME + "_client";
     public static final String BOOTSTRAP_SERVERS = "localhost:9092";

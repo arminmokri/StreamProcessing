@@ -1,4 +1,4 @@
-package kafka_streams.windowing.sliding_window;
+package kafka_streams.windowing.session_windows;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -18,6 +18,7 @@ import java.time.Duration;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SolutionTest {
     private static final String INPUT_TOPIC = Solution.APPLICATION_NAME + "_input";
@@ -70,10 +71,28 @@ public class SolutionTest {
     @Test
     public void testDefaultCase() {
 
-        long baseTime = System.currentTimeMillis();
+        /*
+
+            E1: user1:/home    at 0s
+            E2: user1:/about   at 2s
+            E3: user2:/home    at 3s
+            E4: user2:/contact at 4s
+            E5: user1:/contact at 8s
+            E6: user1:/home    at 11s
+
+            |      Time → 0     1     2     3     4     5     6     7     8     9     10    11    12    13 |
+            |     Frame → |-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|  |
+            |     Event → E1          E2    E3    E4                      E5                E6             |
+            | Windows 1 → [0---------2] user1:E1+E2                                                        |
+            | Windows 2 →                   [3---4] user2:E3+E4                                            |
+            | Windows 3 →                                                 [8--------------11] user1:E5+E6  |
+
+         */
+
+        long baseTime = 0;
 
         // t=0s
-        sendInput(INPUT_TOPIC, "user1", "/home", baseTime);
+        sendInput(INPUT_TOPIC, "user1", "/home", baseTime + 0);
 
         // t=2s
         sendInput(INPUT_TOPIC, "user1", "/about", baseTime + 2000);
@@ -81,21 +100,35 @@ public class SolutionTest {
         // t=3s
         sendInput(INPUT_TOPIC, "user2", "/home", baseTime + 3000);
 
-        // t=7s
-        sendInput(INPUT_TOPIC, "user1", "/contact", baseTime + 7000);
+        // t=4s
+        sendInput(INPUT_TOPIC, "user2", "/contact", baseTime + 4000);
 
-        Map<String, Long> results = readOutput(OUTPUT_TOPIC, 5, 5_000);
+        // t=8s
+        sendInput(INPUT_TOPIC, "user1", "/contact", baseTime + 8000);
 
-        System.out.println("results=" + results);
+        // t=11s
+        sendInput(INPUT_TOPIC, "user1", "/home", baseTime + 11000);
+
+        List<ConsumerRecord<String, Long>> results = readOutput(OUTPUT_TOPIC, 3, 5_000);
+
+        String stringResult = results
+                .stream()
+                .map((record) -> record.key() + "=" + record.value())
+                .reduce((a, b) -> a + ", " + b).orElse("");
+
+        System.out.println("results={" + stringResult + "}");
+
+
+        assertTrue(results.size() == 3);
 
         Map<String, Long> totals = new HashMap<>();
-        results.forEach((k, v) -> {
-            String userId = k.split("@")[0];
-            totals.merge(userId, v, Long::sum);
+        results.forEach((record) -> {
+            String userId = record.key().split("@")[0];
+            totals.merge(userId, record.value(), Long::sum);
         });
 
-        assertEquals(6L, totals.get("user1"));
-        assertEquals(1L, totals.get("user2"));
+        assertEquals(4L, totals.get("user1"));
+        assertEquals(2L, totals.get("user2"));
     }
 
     private void sendInput(String topic, String key, String value, Long timestamp) {
@@ -111,17 +144,17 @@ public class SolutionTest {
         producer.flush();
     }
 
-    private Map<String, Long> readOutput(String topic, int expectedKeys, long timeoutMillis) {
+    private static List<ConsumerRecord<String, Long>> readOutput(String topic, int expectedKeys, long timeoutMillis) {
 
         consumer.subscribe(List.of(topic));
 
-        Map<String, Long> results = new LinkedHashMap<>();
+        List<ConsumerRecord<String, Long>> results = new LinkedList<>();
         long start = System.currentTimeMillis();
 
         while (System.currentTimeMillis() - start < timeoutMillis && (expectedKeys == 0 || results.size() < expectedKeys)) {
             ConsumerRecords<String, Long> records = consumer.poll(Duration.ofMillis(100));
             for (ConsumerRecord<String, Long> record : records) {
-                results.put(record.key(), record.value());
+                results.add(record);
             }
         }
 

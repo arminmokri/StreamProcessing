@@ -1,4 +1,4 @@
-package kafka_streams.windowing.session_window;
+package kafka_streams.windowing.hopping_windows;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -71,10 +71,26 @@ public class SolutionTest {
     @Test
     public void testDefaultCase() {
 
-        long baseTime = System.currentTimeMillis();
+        /*
+            E1: user1:/home    at 0s
+            E2: user1:/about   at 2s
+            E3: user2:/home    at 3s
+            E4: user1:/contact at 8s
+
+            |      Time → 0     1     2     3     4     5     6     7     8     9     10    11    12    13         |
+            |     Frame → |-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|          |
+            |     Event → E1          E2    E3                            E4                                       |
+            | Windows 1 → [0---------------------------5) user1:E1+E2 / user2:E3                                   |
+            | Windows 2 →             [2---------------------------7) user1:E2 / user2:E3                          |
+            | Windows 3 →                         [4---------------------------9) user1:E4                         |
+            | Windows 4 →                                     [6--------------------------11) user1:E4             |
+            | Windows 5 →                                                 [8--------------------------13) user1:E4 |
+         */
+
+        long baseTime = 0L;
 
         // t=0s
-        sendInput(INPUT_TOPIC, "user1", "/home", baseTime);
+        sendInput(INPUT_TOPIC, "user1", "/home", baseTime + 0);
 
         // t=2s
         sendInput(INPUT_TOPIC, "user1", "/about", baseTime + 2000);
@@ -82,23 +98,28 @@ public class SolutionTest {
         // t=3s
         sendInput(INPUT_TOPIC, "user2", "/home", baseTime + 3000);
 
-        // t=7.5s
-        sendInput(INPUT_TOPIC, "user1", "/contact", baseTime + 7500);
+        // t=8s
+        sendInput(INPUT_TOPIC, "user1", "/contact", baseTime + 8000);
 
-        Map<String, Long> results = readOutput(OUTPUT_TOPIC, 0, 5_000);
+        List<ConsumerRecord<String, Long>> results = readOutput(OUTPUT_TOPIC, 7, 5_000);
 
-        System.out.println("results=" + results);
+        String stringResult = results
+                .stream()
+                .map((record) -> record.key() + "=" + record.value())
+                .reduce((a, b) -> a + ", " + b).orElse("");
 
-        assertTrue(results.size() == 3);
+        System.out.println("results={" + stringResult + "}");
+
+        assertTrue(results.size() == 7);
 
         Map<String, Long> totals = new HashMap<>();
-        results.forEach((k, v) -> {
-            String userId = k.split("@")[0];
-            totals.merge(userId, v, Long::sum);
+        results.forEach((record) -> {
+            String userId = record.key().split("@")[0];
+            totals.merge(userId, record.value(), Long::sum);
         });
 
-        assertEquals(3L, totals.get("user1"));
-        assertEquals(1L, totals.get("user2"));
+        assertEquals(6L, totals.get("user1"));
+        assertEquals(2L, totals.get("user2"));
     }
 
     private void sendInput(String topic, String key, String value, Long timestamp) {
@@ -114,17 +135,17 @@ public class SolutionTest {
         producer.flush();
     }
 
-    private Map<String, Long> readOutput(String topic, int expectedKeys, long timeoutMillis) {
+    private static List<ConsumerRecord<String, Long>> readOutput(String topic, int expectedKeys, long timeoutMillis) {
 
         consumer.subscribe(List.of(topic));
 
-        Map<String, Long> results = new LinkedHashMap<>();
+        List<ConsumerRecord<String, Long>> results = new LinkedList<>();
         long start = System.currentTimeMillis();
 
         while (System.currentTimeMillis() - start < timeoutMillis && (expectedKeys == 0 || results.size() < expectedKeys)) {
             ConsumerRecords<String, Long> records = consumer.poll(Duration.ofMillis(100));
             for (ConsumerRecord<String, Long> record : records) {
-                results.put(record.key(), record.value());
+                results.add(record);
             }
         }
 

@@ -1,4 +1,4 @@
-package kafka_streams.windowing.tumbling_windows;
+package kafka_streams.windowing.sliding_windows;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -17,7 +17,6 @@ import org.junit.jupiter.api.Test;
 import java.time.Duration;
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SolutionTest {
@@ -72,24 +71,27 @@ public class SolutionTest {
     public void testDefaultCase() {
 
         /*
-
             E1: user1:/home    at 0s
-            E2: user1:/about   at 2s
-            E3: user2:/home    at 3s
-            E4: user1:/contact at 7s
+            E2: user2:/about   at 1s
+            E3: user1:/about   at 2s
+            E4: user2:/home    at 3s
+            E5: user1:/contact at 7s
 
             |      Time → 0     1     2     3     4     5     6     7     8     9     10    11    12    13 |
             |     Frame → |-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|  |
-            |     Event → E1          E2    E3                      E4                                     |
-            | Windows 1 → [0---------------------------5) user1:E1+E2 / user2:E3                           |
-            | Windows 2 →                               [5--------------------------10) user1:E4           |
-
+            |    Event  → E1    E2    E3    E4                      E5                                     |
+            | Windows 1 → [0---------------------------5) user1:E1 / user1:E1+E3 / user2:E2,E4             |
+            | Windows 2 →      [1----------------------------6) user2:E2                                   |
+            | Windows 3 →            [2----------------------------7) user1:E3 / user1:E3+E5               |
          */
 
         long baseTime = 0;
 
         // t=0s
         sendInput(INPUT_TOPIC, "user1", "/home", baseTime + 0);
+
+        // t=1s
+        sendInput(INPUT_TOPIC, "user2", "/about", baseTime + 1000);
 
         // t=2s
         sendInput(INPUT_TOPIC, "user1", "/about", baseTime + 2000);
@@ -100,7 +102,7 @@ public class SolutionTest {
         // t=7s
         sendInput(INPUT_TOPIC, "user1", "/contact", baseTime + 7000);
 
-        List<ConsumerRecord<String, Long>> results = readOutput(OUTPUT_TOPIC, 3, 5_000);
+        List<ConsumerRecord<String, Long>> results = readOutput(OUTPUT_TOPIC, 0, 5_000);
 
         String stringResult = results
                 .stream()
@@ -110,7 +112,7 @@ public class SolutionTest {
         System.out.println("results={" + stringResult + "}");
 
 
-        assertTrue(results.size() == 3);
+        //assertTrue(results.size() == 4);
 
         Map<String, Long> totals = new HashMap<>();
         results.forEach((record) -> {
@@ -118,8 +120,9 @@ public class SolutionTest {
             totals.merge(userId, record.value(), Long::sum);
         });
 
-        assertEquals(3L, totals.get("user1"));
-        assertEquals(1L, totals.get("user2"));
+        //assertEquals(4L, totals.get("user1"));
+        //assertEquals(3L, totals.get("user2"));
+        assertTrue(false);
     }
 
     private void sendInput(String topic, String key, String value, Long timestamp) {
