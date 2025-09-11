@@ -65,12 +65,12 @@ public class Solution {
         // output
         userEventKTable
                 .toStream()
+                .map(keyValueMapper)
                 .peek((key, value) -> {
                     if (Objects.nonNull(key) && Objects.nonNull(value)) {
                         System.out.println("output to topic(" + outputTopic + ") -> key='" + key + "' value='" + value + "'");
                     }
                 })
-                .map(keyValueMapper)
                 .to(outputTopic, produced);
 
         return builder.build();
