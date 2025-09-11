@@ -35,4 +35,7 @@ test {
     useJUnitPlatform()
     testClassesDirs = sourceSets.main.output.classesDirs
     classpath = sourceSets.main.runtimeClasspath
+    systemProperties["junit.jupiter.execution.parallel.enabled"] = true
+    systemProperties["junit.jupiter.execution.parallel.mode.default"] = "concurrent"
+    maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
 }
