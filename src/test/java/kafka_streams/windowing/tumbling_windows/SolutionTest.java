@@ -72,15 +72,18 @@ public class SolutionTest {
     public void testDefaultCase() {
 
         /*
+
             E1: user1:/home    at 0s
             E2: user1:/about   at 2s
             E3: user2:/home    at 3s
             E4: user1:/contact at 7s
 
-            Time →   0   1   2   3   4   5   6   7   8   9   10  11  12  13
-                     |---|---|---|---|---|---|---|---|---|---|---|---|---|
-                     [0-----------------5) user1:E1+E2 / user2:E3
-                                         [5----------------10) user1:E4
+                Time → 0   1   2   3   4   5   6   7   8   9   10  11  12  13
+               Frame → |---|---|---|---|---|---|---|---|---|---|---|---|---|
+               Event → E1      E2  E3              E4
+            Windows1 → [0-----------------5) user1:E1+E2 / user2:E3
+            Windows2 →                     [5----------------10) user1:E4
+
          */
 
         long baseTime = 0;
