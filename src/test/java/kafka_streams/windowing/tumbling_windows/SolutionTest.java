@@ -121,7 +121,7 @@ public class SolutionTest {
         Map<String, Long> results = new LinkedHashMap<>();
         long start = System.currentTimeMillis();
 
-        while (System.currentTimeMillis() - start < timeoutMillis && results.size() < expectedKeys) {
+        while (System.currentTimeMillis() - start < timeoutMillis && (expectedKeys == 0 || results.size() < expectedKeys)) {
             ConsumerRecords<String, Long> records = consumer.poll(Duration.ofMillis(100));
             for (ConsumerRecord<String, Long> record : records) {
                 results.put(record.key(), record.value());
