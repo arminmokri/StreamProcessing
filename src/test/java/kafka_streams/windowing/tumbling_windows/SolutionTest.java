@@ -97,7 +97,7 @@ public class SolutionTest {
         // t=7s
         sendInput(INPUT_TOPIC, "user1", "/contact", baseTime + 7000);
 
-        List<ConsumerRecord<String, Long>> results = readOutput(OUTPUT_TOPIC, 3, 5_000);
+        List<ConsumerRecord<String, Long>> results = readOutput(OUTPUT_TOPIC, 0, 5_000);
 
         String stringResult = results
                 .stream()
