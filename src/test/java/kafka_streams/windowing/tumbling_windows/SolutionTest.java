@@ -71,7 +71,19 @@ public class SolutionTest {
     @Test
     public void testDefaultCase() {
 
-        long baseTime = System.currentTimeMillis();
+        /*
+            E1: user1:/home    at 0s
+            E2: user1:/about   at 2s
+            E3: user2:/home    at 3s
+            E4: user1:/contact at 7s
+
+            Time →   0   1   2   3   4   5   6   7   8   9   10  11  12  13
+                     |---|---|---|---|---|---|---|---|---|---|---|---|---|
+                     [0-----------------5) user1:E1+E2 / user2:E3
+                                         [5----------------10) user1:E4
+         */
+
+        long baseTime = 0;
 
         // t=0s
         sendInput(INPUT_TOPIC, "user1", "/home", baseTime);
@@ -85,16 +97,22 @@ public class SolutionTest {
         // t=7s
         sendInput(INPUT_TOPIC, "user1", "/contact", baseTime + 7000);
 
-        Map<String, Long> results = readOutput(OUTPUT_TOPIC, 3, 5_000);
+        List<ConsumerRecord<String, Long>> results = readOutput(OUTPUT_TOPIC, 3, 5_000);
 
-        System.out.println("results=" + results);
+        String stringResult = results
+                .stream()
+                .map((record) -> record.key() + "=" + record.value())
+                .reduce((a, b) -> a + ", " + b).orElse("");
 
-        assertTrue(results.size() == 3 || results.size() == 4);
+        System.out.println("results={" + stringResult + "}");
+
+
+        assertTrue(results.size() == 3);
 
         Map<String, Long> totals = new HashMap<>();
-        results.forEach((k, v) -> {
-            String userId = k.split("@")[0];
-            totals.merge(userId, v, Long::sum);
+        results.forEach((record) -> {
+            String userId = record.key().split("@")[0];
+            totals.merge(userId, record.value(), Long::sum);
         });
 
         assertEquals(3L, totals.get("user1"));
@@ -114,17 +132,17 @@ public class SolutionTest {
         producer.flush();
     }
 
-    private Map<String, Long> readOutput(String topic, int expectedKeys, long timeoutMillis) {
+    private static List<ConsumerRecord<String, Long>> readOutput(String topic, int expectedKeys, long timeoutMillis) {
 
         consumer.subscribe(List.of(topic));
 
-        Map<String, Long> results = new LinkedHashMap<>();
+        List<ConsumerRecord<String, Long>> results = new LinkedList<>();
         long start = System.currentTimeMillis();
 
         while (System.currentTimeMillis() - start < timeoutMillis && (expectedKeys == 0 || results.size() < expectedKeys)) {
             ConsumerRecords<String, Long> records = consumer.poll(Duration.ofMillis(100));
             for (ConsumerRecord<String, Long> record : records) {
-                results.put(record.key(), record.value());
+                results.add(record);
             }
         }
 
