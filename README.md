@@ -135,11 +135,11 @@ This repository provides categorized, real-world examples of **stream processing
 #### 5- [Outer Join](src/main/java/kafka_streams/joins/outer_join) 🌐
 
 ### 4. Windowing
-#### 1- [Time Windows](src/main/java/kafka_streams/windowing/time_window) ⌛
-#### 2- [Sliding Windows](src/main/java/kafka_streams/windowing/sliding_window) 🎚️❌
-#### 3- [Session Windows](src/main/java/kafka_streams/windowing/session_window) 🛋️❌
+#### 1- [Tumbling Windows](src/main/java/kafka_streams/windowing/tumbling_windows) ⏳
+#### 2- [Sliding Windows](src/main/java/kafka_streams/windowing/sliding_window) 🎚️
+#### 3- [Session Windows](src/main/java/kafka_streams/windowing/session_window) 🛋️
 #### 4- [Hopping Windows](src/main/java/kafka_streams/windowing/hopping_window) 🔄❌
-#### 5- [Tumbling Windows](src/main/java/kafka_streams/windowing/tumbling_windows) ⏳❌
+
 
 ### 5. Topology & DSL
 #### 1- [Build Topology Manually](src/main/java/kafka_streams/dsl/manual_topology) 🏗️❌
