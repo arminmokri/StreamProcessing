@@ -39,7 +39,7 @@ public class Solution {
                 .withZone(ZoneId.systemDefault());
         Consumed<String, String> consumed = Consumed.with(Serdes.String(), Serdes.String());
         Produced<String, Long> produced = Produced.with(Serdes.String(), Serdes.Long());
-        SlidingWindows slidingWindows = SlidingWindows. ofTimeDifferenceWithNoGrace(Duration.ofSeconds(5));
+        SlidingWindows slidingWindows = SlidingWindows.ofTimeDifferenceWithNoGrace(Duration.ofSeconds(5));
         KeyValueMapper<Windowed<String>, Long, KeyValue<String, Long>> keyValueMapper = (key, value) -> KeyValue.pair(
                 key.key() + "@"
                         + formatter.format(key.window().startTime()) + "-"
