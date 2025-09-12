@@ -68,6 +68,9 @@ public class Solution {
 
         Topology topology = buildTopology(inputTopic, outputTopic);
 
+        System.out.println("Topology of " + APPLICATION_NAME);
+        System.out.println(topology.describe());
+
         try {
             STATE_DIR = Files.createTempDirectory(APPLICATION_ID).toAbsolutePath();
         } catch (IOException ioException) {

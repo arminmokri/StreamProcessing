@@ -142,11 +142,11 @@ This repository provides categorized, real-world examples of **stream processing
 
 
 ### 5. Topology & DSL
-#### 1- [Build Topology Manually](src/main/java/kafka_streams/dsl/manual_topology) 🏗️❌
-#### 2- [DSL Word Count](src/main/java/kafka_streams/dsl/dsl_count) 📖❌
-#### 3- [Branching Streams](src/main/java/kafka_streams/dsl/branching) 🌿❌
-#### 4- [Transform Values](src/main/java/kafka_streams/dsl/transform_values) 🔧❌
-#### 5- [Filter Streams](src/main/java/kafka_streams/dsl/filter_streams) 🚦❌
+#### 1- [Build Topology Manually](src/main/java/kafka_streams/topology_and_dsl/build_topology_manually) 🏗️❌
+#### 2- [DSL Word Count](src/main/java/kafka_streams/topology_and_dsl/dsl_word_count) 📖❌
+#### 3- [Branching Streams](src/main/java/kafka_streams/topology_and_dsl/branching_streams) 🌿❌
+#### 4- [Transform Values](src/main/java/kafka_streams/topology_and_dsl/transform_values) 🔧❌
+#### 5- [Filter Streams](src/main/java/kafka_streams/topology_and_dsl/filter_streams) 🚦❌
 
 ### 6. Real-World Use Cases
 #### 1- [Transaction Monitoring](src/main/java/kafka_streams/usecases/transactions) 💳❌
