@@ -140,13 +140,12 @@ This repository provides categorized, real-world examples of **stream processing
 #### 3- [Session Windows](src/main/java/kafka_streams/windowing/session_windows) 🛋️❌
 #### 4- [Hopping Windows](src/main/java/kafka_streams/windowing/hopping_windows) 🔄
 
-
-### 5. Topology & DSL
-#### 1- [Build Topology Manually](src/main/java/kafka_streams/topology_and_dsl/build_topology_manually) 🏗️❌
-#### 2- [DSL Word Count](src/main/java/kafka_streams/topology_and_dsl/dsl_word_count) 📖❌
-#### 3- [Branching Streams](src/main/java/kafka_streams/topology_and_dsl/branching_streams) 🌿❌
-#### 4- [Transform Values](src/main/java/kafka_streams/topology_and_dsl/transform_values) 🔧❌
-#### 5- [Filter Streams](src/main/java/kafka_streams/topology_and_dsl/filter_streams) 🚦❌
+### 5. Other
+#### 1- [Branching Streams](src/main/java/kafka_streams/other/branching_streams) 🌿
+#### 2- [Filter Streams](src/main/java/kafka_streams/other/filter_streams) 🚦❌
+#### 3- [Processor API (PAPI)](src/main/java/kafka_streams/other/processor_api) ⚙️❌
+#### 4- [GlobalKTable Join](src/main/java/kafka_streams/other/global_ktable_join) 🌍❌
+#### 5- [Repartitioning Streams](src/main/java/kafka_streams/other/repartitioning_streams) 🔄❌
 
 ### 6. Real-World Use Cases
 #### 1- [Transaction Monitoring](src/main/java/kafka_streams/usecases/transactions) 💳❌
