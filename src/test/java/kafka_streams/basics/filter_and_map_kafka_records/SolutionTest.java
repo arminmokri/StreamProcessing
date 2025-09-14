@@ -1,5 +1,6 @@
 package kafka_streams.basics.filter_and_map_kafka_records;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -7,6 +8,7 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.junit.jupiter.api.AfterAll;
@@ -71,8 +73,21 @@ public class SolutionTest {
 
     @Test
     public void testDefaultCase() {
-        sendInput(INPUT_TOPIC, null, "{\"name\": \"alice\", \"age\": 17}", null);
-        sendInput(INPUT_TOPIC, null, "{\"name\": \"bob\", \"age\": 25}", null);
+
+        // variable
+
+        // UserEvent(String name, int age) - INPUT_TOPIC
+        Serde<Solution.UserEvent> userEventSerde = Solution.getSerde(
+                new TypeReference<Solution.UserEvent>() {
+                }
+        );
+        Solution.UserEvent userEvent1 = new Solution.UserEvent("alice", 17);
+        Solution.UserEvent userEvent2 = new Solution.UserEvent("bob", 25);
+
+        // test
+
+        sendInput(INPUT_TOPIC, null, new String(userEventSerde.serializer().serialize(null, userEvent1)), null);
+        sendInput(INPUT_TOPIC, null, new String(userEventSerde.serializer().serialize(null, userEvent2)), null);
 
         List<ConsumerRecord<String, String>> results = readOutput(OUTPUT_TOPIC, 1, 5_000);
 

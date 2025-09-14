@@ -10,6 +10,7 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.junit.jupiter.api.AfterAll;
@@ -75,10 +76,28 @@ public class SolutionTest {
 
     @Test
     public void testDefaultCase() {
-        sendInput(INPUT_TOPIC, "A", "[\"1\",\"2\"]", null);
-        sendInput(INPUT_TOPIC, "B", "[\"A\",\"B\"]", null);
-        sendInput(INPUT_TOPIC, "A", "[\"3\"]", null);
-        sendInput(INPUT_TOPIC, "B", "[\"C\"]", null);
+
+        // variable
+
+        // List<String> - INPUT_TOPIC / OUTPUT_TOPIC
+        Serde<List<String>> listOfStringSerde = kafka_streams.other.branching_streams.Solution.getSerde(
+                new TypeReference<List<String>>() {
+                }
+        );
+
+        List<String> list1 = List.of("1", "2");
+        List<String> list2 = List.of("A", "B");
+        List<String> list3 = List.of("3");
+        List<String> list4 = List.of("C");
+        List<String> list1Plus3 = List.of("1", "2", "3");
+        List<String> list2Plus4 = List.of("A", "B", "C");
+
+        // test
+
+        sendInput(INPUT_TOPIC, "A", new String(listOfStringSerde.serializer().serialize(null, list1)), null);
+        sendInput(INPUT_TOPIC, "B", new String(listOfStringSerde.serializer().serialize(null, list2)), null);
+        sendInput(INPUT_TOPIC, "A", new String(listOfStringSerde.serializer().serialize(null, list3)), null);
+        sendInput(INPUT_TOPIC, "B", new String(listOfStringSerde.serializer().serialize(null, list4)), null);
 
         List<ConsumerRecord<String, String>> results = readOutput(OUTPUT_TOPIC, 2, 5_000);
 
@@ -112,8 +131,8 @@ public class SolutionTest {
             throw new RuntimeException(e);
         }
 
-        assertEquals(List.of("1", "2", "3"), listA);
-        assertEquals(List.of("A", "B", "C"), listB);
+        assertEquals(list1Plus3, listA);
+        assertEquals(list2Plus4, listB);
     }
 
     private static void sendInput(String topic, String key, String value, Long timestamp) {

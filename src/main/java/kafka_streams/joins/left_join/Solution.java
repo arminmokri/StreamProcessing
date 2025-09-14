@@ -51,7 +51,7 @@ public class Solution {
                     order.id,
                     order.customerId,
                     order.items,
-                    customer != null ? customer.name : "unknown"
+                    customer != null ? customer.name : null
 
             );
         }

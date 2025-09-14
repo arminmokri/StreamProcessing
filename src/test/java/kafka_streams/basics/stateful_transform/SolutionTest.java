@@ -1,5 +1,6 @@
 package kafka_streams.basics.stateful_transform;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -7,6 +8,7 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.junit.jupiter.api.AfterAll;
@@ -71,10 +73,25 @@ public class SolutionTest {
 
     @Test
     public void testDefaultCase() {
-        sendInput(INPUT_TOPIC, null, "{\"user\": \"alice\", \"amount\": 50.0}", null);
-        sendInput(INPUT_TOPIC, null, "{\"user\": \"alice\", \"amount\": 20.0}", null);
-        sendInput(INPUT_TOPIC, null, "{\"user\": \"bob\",   \"amount\": 30.0}", null);
-        sendInput(INPUT_TOPIC, null, "{\"user\": \"alice\", \"amount\": 10.0}", null);
+
+        // variable
+
+        // Purchase(String user, Double amount) - INPUT_TOPIC
+        Serde<Solution.Purchase> purchaseSerde = Solution.getSerde(
+                new TypeReference<Solution.Purchase>() {
+                }
+        );
+        Solution.Purchase purchase1 = new Solution.Purchase("alice", 50.0d);
+        Solution.Purchase purchase2 = new Solution.Purchase("alice", 20.0d);
+        Solution.Purchase purchase3 = new Solution.Purchase("bob", 30.0d);
+        Solution.Purchase purchase4 = new Solution.Purchase("alice", 10.0d);
+
+        // test
+
+        sendInput(INPUT_TOPIC, null, new String(purchaseSerde.serializer().serialize(null, purchase1)), null);
+        sendInput(INPUT_TOPIC, null, new String(purchaseSerde.serializer().serialize(null, purchase2)), null);
+        sendInput(INPUT_TOPIC, null, new String(purchaseSerde.serializer().serialize(null, purchase3)), null);
+        sendInput(INPUT_TOPIC, null, new String(purchaseSerde.serializer().serialize(null, purchase4)), null);
 
         List<ConsumerRecord<String, String>> results = readOutput(OUTPUT_TOPIC, 4, 5_000);
 

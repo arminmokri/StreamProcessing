@@ -1,5 +1,6 @@
 package kafka_streams.joins.windowed_join;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -7,6 +8,7 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.junit.jupiter.api.AfterAll;
@@ -78,25 +80,56 @@ public class SolutionTest {
     @Test
     public void testDefaultCase() {
 
+        // variable
+
+        // Order(String id, List<String> items) - INPUT_TOPIC_A
+        Serde<Solution.Order> orderSerde = Solution.getSerde(
+                new TypeReference<Solution.Order>() {
+                }
+        );
+
+        Solution.Order order1 = new Solution.Order("1000", List.of("shoes", "bag"));
+        Solution.Order order2 = new Solution.Order("1001", List.of("iPhone", "AirPods"));
+        Solution.Order order3 = new Solution.Order("1002", List.of("Galaxy"));
+
+        // Payment(String id, String orderId, Integer amount) - INPUT_TOPIC_B
+        Serde<Solution.Payment> paymentSerde = Solution.getSerde(
+                new TypeReference<Solution.Payment>() {
+                }
+        );
+
+        Solution.Payment payment1 = new Solution.Payment("2000", "1000", 100);
+        Solution.Payment payment2 = new Solution.Payment("2001", "1001", 2000);
+        Solution.Payment payment3 = new Solution.Payment("2001", "1002", 500);
+
+        // EnrichedOrder(String id, List<String> items, String paymentId, Integer amount) - OUTPUT_TOPIC
+        Serde<Solution.EnrichedOrder> enrichedOrderSerde = Solution.getSerde(
+                new TypeReference<Solution.EnrichedOrder>() {
+                }
+        );
+
+        Solution.EnrichedOrder enrichedOrder1 = new Solution.EnrichedOrder("1000", List.of("shoes", "bag"), "2000", 100);
+        Solution.EnrichedOrder enrichedOrder2 = new Solution.EnrichedOrder("1001", List.of("iPhone", "AirPods"), "2001", 2000);
+
+        // test
+
         long baseTime = System.currentTimeMillis();
 
         // t=0s
-        // Order(String id, List<String> items)
-        sendInput(INPUT_TOPIC_A, "1000", "{\"id\": \"1000\", \"items\": [\"shoes\", \"bag\"]}", baseTime);
+        sendInput(INPUT_TOPIC_A, "1000", new String(orderSerde.serializer().serialize(null, order1)), baseTime);
 
         // t=3s
-        // Payment(String id, String orderId, Integer amount)
-        sendInput(INPUT_TOPIC_B, "1000", "{\"id\": \"2000\", \"orderId\": \"1000\", \"amount\": 100}", baseTime + 3000);
+        sendInput(INPUT_TOPIC_B, "1000", new String(paymentSerde.serializer().serialize(null, payment1)), baseTime + 3000);
 
         // t=6s
-        sendInput(INPUT_TOPIC_A, "1001", "{\"id\": \"1001\", \"items\": [\"iPhone\", \"AirPods\"]}", baseTime + 6000);
-        sendInput(INPUT_TOPIC_B, "1001", "{\"id\": \"2001\", \"orderId\": \"1001\", \"amount\": 2000}", baseTime + 6000);
+        sendInput(INPUT_TOPIC_A, "1001", new String(orderSerde.serializer().serialize(null, order2)), baseTime + 6000);
+        sendInput(INPUT_TOPIC_B, "1001", new String(paymentSerde.serializer().serialize(null, payment2)), baseTime + 6000);
 
         // t=7s
-        sendInput(INPUT_TOPIC_A, "1002", "{\"id\": \"1002\", \"items\": [\"Galaxy\"]}", baseTime + 7000);
+        sendInput(INPUT_TOPIC_A, "1002", new String(orderSerde.serializer().serialize(null, order3)), baseTime + 7000);
 
         // t=13s
-        sendInput(INPUT_TOPIC_B, "1002", "{\"id\": \"2001\", \"orderId\": \"1002\", \"amount\": 500}", baseTime + 14000);
+        sendInput(INPUT_TOPIC_B, "1002", new String(paymentSerde.serializer().serialize(null, payment3)), baseTime + 14000);
 
 
         List<ConsumerRecord<String, String>> results = readOutput(OUTPUT_TOPIC, 2, 5_000);
@@ -109,17 +142,9 @@ public class SolutionTest {
         System.out.println("results={" + stringResult + "}");
 
 
-        assertEquals(
-                "{\"id\":\"1000\",\"items\":[\"shoes\",\"bag\"],\"paymentId\":\"2000\",\"amount\":100}",
-                getValue(results, "1000")
-        );
-        assertEquals(
-                "{\"id\":\"1001\",\"items\":[\"iPhone\",\"AirPods\"],\"paymentId\":\"2001\",\"amount\":2000}",
-                getValue(results, "1001")
-        );
-        assertNull(
-                getValue(results, "1002")
-        );
+        assertEquals(enrichedOrder1, enrichedOrderSerde.deserializer().deserialize(null, getValue(results, "1000").getBytes()));
+        assertEquals(enrichedOrder2, enrichedOrderSerde.deserializer().deserialize(null, getValue(results, "1001").getBytes()));
+        assertNull(getValue(results, "1002"));
 
     }
 

@@ -1,5 +1,6 @@
 package kafka_streams.joins.outer_join;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -7,6 +8,7 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.junit.jupiter.api.AfterAll;
@@ -77,14 +79,43 @@ public class SolutionTest {
     @Test
     public void testDefaultCase() {
 
+        // variable
 
-        // Order(String id, String customerId, List<String> items)
-        sendInput(INPUT_TOPIC_B, "1000", "{\"id\": \"2000\", \"customerId\": \"1000\", \"items\": [\"iPhone\", \"AirPods\"]}", null);
-        sendInput(INPUT_TOPIC_B, "1002", "{\"id\": \"2002\", \"customerId\": \"1002\", \"items\": [\"Video Player\"]}", null);
+        // Order(String id, String customerId, List<String> items) - INPUT_TOPIC_B
+        Serde<Solution.Order> orderSerde = Solution.getSerde(
+                new TypeReference<Solution.Order>() {
+                }
+        );
 
-        // Customer(String id, String name)
-        sendInput(INPUT_TOPIC_A, "1000", "{\"id\": \"1000\", \"name\": \"Alice\"}", null);
-        sendInput(INPUT_TOPIC_A, "1001", "{\"id\": \"1001\", \"name\": \"Bob\"}", null);
+        Solution.Order order1 = new Solution.Order("2000", "1000", List.of("iPhone", "AirPods"));
+        Solution.Order order2 = new Solution.Order("2002", "1002", List.of("Video Player"));
+
+        // Customer(String id, String name) - INPUT_TOPIC_A
+        Serde<Solution.Customer> customerSerde = Solution.getSerde(
+                new TypeReference<Solution.Customer>() {
+                }
+        );
+
+        Solution.Customer customer1 = new Solution.Customer("1000", "Alice");
+        Solution.Customer customer2 = new Solution.Customer("1001", "Bob");
+
+        // EnrichOrder(String id, String customerId, List<String> items, String name) - OUTPUT_TOPIC
+        Serde<Solution.EnrichOrder> enrichOrderSerde = Solution.getSerde(
+                new TypeReference<Solution.EnrichOrder>() {
+                }
+        );
+
+        Solution.EnrichOrder enrichOrder1 = new Solution.EnrichOrder("2000", "1000", List.of("iPhone", "AirPods"), "Alice");
+        Solution.EnrichOrder enrichOrder2 = new Solution.EnrichOrder(null, "1001", List.of(), "Bob");
+        Solution.EnrichOrder enrichOrder3 = new Solution.EnrichOrder("2002", "1002", List.of("Video Player"), null);
+
+        // test
+
+        sendInput(INPUT_TOPIC_B, "1000", new String(orderSerde.serializer().serialize(null, order1)), null);
+        sendInput(INPUT_TOPIC_B, "1002", new String(orderSerde.serializer().serialize(null, order2)), null);
+
+        sendInput(INPUT_TOPIC_A, "1000", new String(customerSerde.serializer().serialize(null, customer1)), null);
+        sendInput(INPUT_TOPIC_A, "1001", new String(customerSerde.serializer().serialize(null, customer2)), null);
 
         List<ConsumerRecord<String, String>> results = readOutput(OUTPUT_TOPIC, 3, 5_000);
 
@@ -95,19 +126,9 @@ public class SolutionTest {
 
         System.out.println("results={" + stringResult + "}");
 
-
-        assertEquals(
-                "{\"id\":\"2000\",\"customerId\":\"1000\",\"items\":[\"iPhone\",\"AirPods\"],\"name\":\"Alice\"}",
-                getValue(results, "1000")
-        );
-        assertEquals(
-                "{\"id\":null,\"customerId\":\"1001\",\"items\":[],\"name\":\"Bob\"}",
-                getValue(results, "1001")
-        );
-        assertEquals(
-                "{\"id\":\"2002\",\"customerId\":\"1002\",\"items\":[\"Video Player\"],\"name\":null}",
-                getValue(results, "1002")
-        );
+        assertEquals(enrichOrder1, enrichOrderSerde.deserializer().deserialize(null, getValue(results, "1000").getBytes()));
+        assertEquals(enrichOrder2, enrichOrderSerde.deserializer().deserialize(null, getValue(results, "1001").getBytes()));
+        assertEquals(enrichOrder3, enrichOrderSerde.deserializer().deserialize(null, getValue(results, "1002").getBytes()));
     }
 
     private void sendInput(String topic, String key, String value, Long timestamp) {
