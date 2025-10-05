@@ -60,8 +60,12 @@ public class SolutionTest {
 
     @AfterAll
     public static void cleanup() {
-        if (producer != null) producer.close();
-        if (consumer != null) consumer.close();
+        if (Objects.nonNull(producer)) {
+            producer.close();
+        }
+        if (Objects.nonNull(consumer)) {
+            consumer.close();
+        }
 
         solution.stopStream();
         Solution.deleteTopic(INPUT_TOPIC);
