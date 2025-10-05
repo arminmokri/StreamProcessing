@@ -106,7 +106,7 @@ public class Solution {
     }
 
     public void stopStream() {
-        if (streams != null) {
+        if (Objects.nonNull(streams)) {
             streams.close();
         }
 
