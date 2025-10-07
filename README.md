@@ -144,7 +144,7 @@ This repository provides categorized, real-world examples of **stream processing
 #### 1- [Branching Streams](src/main/java/kafka_streams/other/branching_streams) 🌿
 #### 2- [Processor API Way A (PAPI)](src/main/java/kafka_streams/other/processor_api_way_a) ⚙️
 #### 3- [Processor API Way B (PAPI)](src/main/java/kafka_streams/other/processor_api_way_b) ⚙️
-#### 4- [GlobalKTable Join](src/main/java/kafka_streams/other/global_ktable_join) 🌍❌
+#### 4- [GlobalKTable Join](src/main/java/kafka_streams/other/global_ktable_join) 🌍
 #### 5- [Repartitioning Streams](src/main/java/kafka_streams/other/repartitioning_streams) 🔄❌
 
 ### 6. Real-World Use Cases
