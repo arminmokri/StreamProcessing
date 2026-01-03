@@ -42,7 +42,11 @@ public class Solution {
         @Override
         public void process(Record<String, String> record) {
 
-            System.out.println("input from topic -> key='" + record.key() + "' value='" + record.value() + "'");
+            System.out.println(
+                    "input from topic"
+                            + " -> key='" + (Objects.nonNull(record) && Objects.nonNull(record.key()) ? record.key() : "null")
+                            + "' value='" + (Objects.nonNull(record) && Objects.nonNull(record.value()) ? record.value() : "null") + "'"
+            );
 
             long now = record.timestamp();
             Long lastLogin = stateStore.get(record.key());
@@ -52,7 +56,11 @@ public class Solution {
                 String key = record.key();
                 String value = "Suspicious: " + key + " logged in twice within 5s";
 
-                System.out.println("output to topic -> key='" + key + "' value='" + value + "'");
+                System.out.println(
+                        "output to topic"
+                                + " -> key='" + (Objects.nonNull(key) ? key : "null")
+                                + "' value='" + (Objects.nonNull(value) ? value : "null") + "'"
+                );
 
                 context.forward(new Record<>(
                         key,

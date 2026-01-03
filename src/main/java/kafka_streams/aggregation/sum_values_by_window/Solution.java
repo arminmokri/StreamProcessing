@@ -47,7 +47,7 @@ public class Solution {
                         System.out.println(
                                 "input from topic(" + inputTopic
                                         + ") -> key='" + (Objects.nonNull(key) ? key : "null")
-                                        + "' value='" + (Objects.nonNull(value) ? key : "null") + "'"
+                                        + "' value='" + (Objects.nonNull(value) ? value : "null") + "'"
                         )
                 );
 
@@ -80,7 +80,7 @@ public class Solution {
                         System.out.println(
                                 "output to topic(" + outputTopic
                                         + ") -> key='" + (Objects.nonNull(key) ? key : "null")
-                                        + "' value='" + (Objects.nonNull(value) ? key : "null") + "'"
+                                        + "' value='" + (Objects.nonNull(value) ? value : "null") + "'"
                         )
                 )
                 .to(outputTopic, produced);

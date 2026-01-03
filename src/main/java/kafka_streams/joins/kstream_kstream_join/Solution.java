@@ -49,7 +49,7 @@ public class Solution {
                         System.out.println(
                                 "input from topic(" + inputTopicA
                                         + ") -> key='" + (Objects.nonNull(key) ? key : "null")
-                                        + "' value='" + (Objects.nonNull(value) ? key : "null") + "'"
+                                        + "' value='" + (Objects.nonNull(value) ? value : "null") + "'"
                         )
                 );
         KStream<String, String> inputBKStream = builder
@@ -58,7 +58,7 @@ public class Solution {
                         System.out.println(
                                 "input from topic(" + inputTopicB
                                         + ") -> key='" + (Objects.nonNull(key) ? key : "null")
-                                        + "' value='" + (Objects.nonNull(value) ? key : "null") + "'"
+                                        + "' value='" + (Objects.nonNull(value) ? value : "null") + "'"
                         )
                 );
 
@@ -72,7 +72,7 @@ public class Solution {
                         System.out.println(
                                 "output to topic(" + outputTopic
                                         + ") -> key='" + (Objects.nonNull(key) ? key : "null")
-                                        + "' value='" + (Objects.nonNull(value) ? key : "null") + "'"
+                                        + "' value='" + (Objects.nonNull(value) ? value : "null") + "'"
                         )
                 )
                 .to(outputTopic, produced);
