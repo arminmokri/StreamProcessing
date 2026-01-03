@@ -115,8 +115,7 @@ public class SolutionTest {
 
         System.out.println("results={" + stringResult + "}");
 
-
-        //assertTrue(results.size() == 4);
+        assertTrue(results.size() == 6);
 
         Map<String, Long> totals = new HashMap<>();
         results.forEach((record) -> {

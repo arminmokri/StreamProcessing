@@ -17,7 +17,6 @@ import org.junit.jupiter.api.Test;
 import java.time.Duration;
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SolutionTest {
@@ -122,7 +121,6 @@ public class SolutionTest {
 
         System.out.println("results={" + stringResult + "}");
 
-
         assertTrue(results.size() == 3);
 
         Map<String, Long> totals = new HashMap<>();
@@ -131,8 +129,9 @@ public class SolutionTest {
             totals.merge(userId, record.value(), Long::sum);
         });
 
-        assertEquals(4L, totals.get("user1"));
-        assertEquals(2L, totals.get("user2"));
+        //assertEquals(4L, totals.get("user1"));
+        //assertEquals(2L, totals.get("user2"));
+        assertTrue(false);
     }
 
     private void sendInput(String topic, String key, String value, Long timestamp) {

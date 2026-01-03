@@ -113,7 +113,6 @@ public class SolutionTest {
 
         System.out.println("results={" + stringResult + "}");
 
-
         assertTrue(results.size() == 3);
 
         Map<String, Long> totals = new HashMap<>();
