@@ -51,11 +51,13 @@ public class Solution {
         // input
         KStream<String, String> inputKStream = builder
                 .stream(inputTopic, consumed)
-                .peek((key, value) -> {
-                    if (Objects.nonNull(key) && Objects.nonNull(value)) {
-                        System.out.println("input from topic(" + inputTopic + ") -> key='" + key + "' value='" + value + "'");
-                    }
-                });
+                .peek((key, value) ->
+                        System.out.println(
+                                "input from topic(" + inputTopic
+                                        + ") -> key='" + (Objects.nonNull(key) ? key : "null")
+                                        + "' value='" + (Objects.nonNull(value) ? key : "null") + "'"
+                        )
+                );
 
         // transform
         KTable<Windowed<String>, Long> userEventKTable = inputKStream
@@ -67,11 +69,13 @@ public class Solution {
         userEventKTable
                 .toStream()
                 .map(keyValueMapper)
-                .peek((key, value) -> {
-                    if (Objects.nonNull(key) && Objects.nonNull(value)) {
-                        System.out.println("output to topic(" + outputTopic + ") -> key='" + key + "' value='" + value + "'");
-                    }
-                })
+                .peek((key, value) ->
+                        System.out.println(
+                                "output to topic(" + outputTopic
+                                        + ") -> key='" + (Objects.nonNull(key) ? key : "null")
+                                        + "' value='" + (Objects.nonNull(value) ? key : "null") + "'"
+                        )
+                )
                 .to(outputTopic, produced);
 
         return builder.build();

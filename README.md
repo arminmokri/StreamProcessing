@@ -136,7 +136,7 @@ This repository provides categorized, real-world examples of **stream processing
 
 ### 4. Windowing
 #### 1- [Tumbling Windows](src/main/java/kafka_streams/windowing/tumbling_windows) ⏳
-#### 2- [Sliding Windows](src/main/java/kafka_streams/windowing/sliding_windows) 🎚️
+#### 2- [Sliding Windows](src/main/java/kafka_streams/windowing/sliding_windows) 🎚️❌
 #### 3- [Session Windows](src/main/java/kafka_streams/windowing/session_windows) 🛋️❌
 #### 4- [Hopping Windows](src/main/java/kafka_streams/windowing/hopping_windows) 🔄
 

@@ -45,18 +45,22 @@ public class Solution {
         // input
         KStream<String, String> inputAKStream = builder
                 .stream(inputTopicA, consumed)
-                .peek((key, value) -> {
-                    if (Objects.nonNull(key) && Objects.nonNull(value)) {
-                        System.out.println("input from topic(" + inputTopicA + ") -> key='" + key + "' value='" + value + "'");
-                    }
-                });
+                .peek((key, value) ->
+                        System.out.println(
+                                "input from topic(" + inputTopicA
+                                        + ") -> key='" + (Objects.nonNull(key) ? key : "null")
+                                        + "' value='" + (Objects.nonNull(value) ? key : "null") + "'"
+                        )
+                );
         KStream<String, String> inputBKStream = builder
                 .stream(inputTopicB, consumed)
-                .peek((key, value) -> {
-                    if (Objects.nonNull(key) && Objects.nonNull(value)) {
-                        System.out.println("input from topic(" + inputTopicB + ") -> key='" + key + "' value='" + value + "'");
-                    }
-                });
+                .peek((key, value) ->
+                        System.out.println(
+                                "input from topic(" + inputTopicB
+                                        + ") -> key='" + (Objects.nonNull(key) ? key : "null")
+                                        + "' value='" + (Objects.nonNull(value) ? key : "null") + "'"
+                        )
+                );
 
         // transform
         KStream<String, String> joinedStream = inputAKStream
@@ -64,11 +68,13 @@ public class Solution {
 
         // output
         joinedStream
-                .peek((key, value) -> {
-                    if (Objects.nonNull(key) && Objects.nonNull(value)) {
-                        System.out.println("output to topic(" + outputTopic + ") -> key='" + key + "' value='" + value + "'");
-                    }
-                })
+                .peek((key, value) ->
+                        System.out.println(
+                                "output to topic(" + outputTopic
+                                        + ") -> key='" + (Objects.nonNull(key) ? key : "null")
+                                        + "' value='" + (Objects.nonNull(value) ? key : "null") + "'"
+                        )
+                )
                 .to(outputTopic, produced);
 
         return builder.build();
