@@ -151,6 +151,6 @@ This repository provides categorized, real-world examples of **stream processing
 ### 6. Real-World Use Cases
 #### 1- [Transaction Monitoring](src/main/java/kafka_streams/real_world_use_cases/transaction_monitoring) 💳
 #### 2- [Clickstream Analytics](src/main/java/kafka_streams/real_world_use_cases/clickstream_analytics) 🖱️
-#### 3- [IoT Sensor Aggregation](src/main/java/kafka_streams/real_world_use_cases/iot_sensor_aggregation) 📡❌
+#### 3- [IoT Sensor Aggregation](src/main/java/kafka_streams/real_world_use_cases/iot_sensor_aggregation) 📡
 #### 4- [User Sessionization](src/main/java/kafka_streams/real_world_use_cases/user_sessionization) 👤❌
 #### 5- [Log Enrichment](src/main/java/kafka_streams/real_world_use_cases/log_enrichment) 🧾❌
