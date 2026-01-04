@@ -92,18 +92,19 @@ public class SolutionTest {
          */
 
         long baseTime = 0L;
+        long eachSecToMilliSec = 1_000;
 
         // t=0s
-        sendInput(INPUT_TOPIC, "user1", "/home", baseTime + 0);
+        sendInput(INPUT_TOPIC, "user1", "/home", baseTime + (0 * eachSecToMilliSec));
 
         // t=2s
-        sendInput(INPUT_TOPIC, "user1", "/about", baseTime + 2000);
+        sendInput(INPUT_TOPIC, "user1", "/about", baseTime + (2 * eachSecToMilliSec));
 
         // t=3s
-        sendInput(INPUT_TOPIC, "user2", "/home", baseTime + 3000);
+        sendInput(INPUT_TOPIC, "user2", "/home", baseTime + (3 * eachSecToMilliSec));
 
         // t=8s
-        sendInput(INPUT_TOPIC, "user1", "/contact", baseTime + 8000);
+        sendInput(INPUT_TOPIC, "user1", "/contact", baseTime + (8 * eachSecToMilliSec));
 
         List<ConsumerRecord<String, Long>> results = readOutput(OUTPUT_TOPIC, 7, 5_000);
 

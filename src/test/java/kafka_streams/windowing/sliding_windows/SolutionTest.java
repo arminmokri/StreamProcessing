@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import java.time.Duration;
 import java.util.*;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SolutionTest {
@@ -84,27 +85,28 @@ public class SolutionTest {
             |      Time → 0     1     2     3     4     5     6     7     8     9     10    11    12    13 |
             |     Frame → |-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|  |
             |    Event  → E1    E2    E3    E4                      E5                                     |
-            | Windows 1 → [0---------------------------5) user1:E1 / user1:E1+E3 / user2:E2,E4             |
+            | Windows 1 → [0---------------------------5) user1:E1 / user1:E1+E3 / user2:E2+E4             |
             | Windows 2 →      [1----------------------------6) user2:E2                                   |
             | Windows 3 →            [2----------------------------7) user1:E3 / user1:E3+E5               |
          */
 
-        long baseTime = 0;
+        long baseTime = 0L;
+        long eachSecToMilliSec = 1_000;
 
         // t=0s
-        sendInput(INPUT_TOPIC, "user1", "/home", baseTime + 0);
+        sendInput(INPUT_TOPIC, "user1", "/home", baseTime + (0 * eachSecToMilliSec));
 
         // t=1s
-        sendInput(INPUT_TOPIC, "user2", "/about", baseTime + 1000);
+        sendInput(INPUT_TOPIC, "user2", "/about", baseTime + (1 * eachSecToMilliSec));
 
         // t=2s
-        sendInput(INPUT_TOPIC, "user1", "/about", baseTime + 2000);
+        sendInput(INPUT_TOPIC, "user1", "/about", baseTime + (2 * eachSecToMilliSec));
 
         // t=3s
-        sendInput(INPUT_TOPIC, "user2", "/home", baseTime + 3000);
+        sendInput(INPUT_TOPIC, "user2", "/home", baseTime + (3 * eachSecToMilliSec));
 
         // t=7s
-        sendInput(INPUT_TOPIC, "user1", "/contact", baseTime + 7000);
+        sendInput(INPUT_TOPIC, "user1", "/contact", baseTime + (7 * eachSecToMilliSec));
 
         List<ConsumerRecord<String, Long>> results = readOutput(OUTPUT_TOPIC, 0, 5_000);
 
@@ -123,9 +125,8 @@ public class SolutionTest {
             totals.merge(userId, record.value(), Long::sum);
         });
 
-        //assertEquals(4L, totals.get("user1"));
-        //assertEquals(3L, totals.get("user2"));
-        assertTrue(false);
+        assertEquals(6L, totals.get("user1"));
+        assertEquals(3L, totals.get("user2"));
     }
 
     private void sendInput(String topic, String key, String value, Long timestamp) {

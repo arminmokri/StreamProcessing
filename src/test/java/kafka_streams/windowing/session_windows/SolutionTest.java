@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import java.time.Duration;
 import java.util.*;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SolutionTest {
@@ -92,25 +93,26 @@ public class SolutionTest {
 
          */
 
-        long baseTime = 0;
+        long baseTime = 0L;
+        long eachSecToMilliSec = 1_000;
 
         // t=0s
-        sendInput(INPUT_TOPIC, "user1", "/home", baseTime + 0);
+        sendInput(INPUT_TOPIC, "user1", "/home", baseTime + (0 * eachSecToMilliSec));
 
         // t=2s
-        sendInput(INPUT_TOPIC, "user1", "/about", baseTime + 2000);
+        sendInput(INPUT_TOPIC, "user1", "/about", baseTime + (2 * eachSecToMilliSec));
 
         // t=3s
-        sendInput(INPUT_TOPIC, "user2", "/home", baseTime + 3000);
+        sendInput(INPUT_TOPIC, "user2", "/home", baseTime + (3 * eachSecToMilliSec));
 
         // t=4s
-        sendInput(INPUT_TOPIC, "user2", "/contact", baseTime + 4000);
+        sendInput(INPUT_TOPIC, "user2", "/contact", baseTime + (4 * eachSecToMilliSec));
 
         // t=8s
-        sendInput(INPUT_TOPIC, "user1", "/contact", baseTime + 8000);
+        sendInput(INPUT_TOPIC, "user1", "/contact", baseTime + (8 * eachSecToMilliSec));
 
         // t=11s
-        sendInput(INPUT_TOPIC, "user1", "/home", baseTime + 11000);
+        sendInput(INPUT_TOPIC, "user1", "/home", baseTime + (11 * eachSecToMilliSec));
 
         List<ConsumerRecord<String, Long>> results = readOutput(OUTPUT_TOPIC, 3, 5_000);
 
@@ -129,9 +131,8 @@ public class SolutionTest {
             totals.merge(userId, record.value(), Long::sum);
         });
 
-        //assertEquals(4L, totals.get("user1"));
-        //assertEquals(2L, totals.get("user2"));
-        assertTrue(false);
+        assertEquals(4L, totals.get("user1"));
+        assertEquals(2L, totals.get("user2"));
     }
 
     private void sendInput(String topic, String key, String value, Long timestamp) {

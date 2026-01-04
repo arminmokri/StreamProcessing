@@ -136,8 +136,8 @@ This repository provides categorized, real-world examples of **stream processing
 
 ### 4. Windowing
 #### 1- [Tumbling Windows](src/main/java/kafka_streams/windowing/tumbling_windows) ⏳
-#### 2- [Sliding Windows](src/main/java/kafka_streams/windowing/sliding_windows) 🎚️❌
-#### 3- [Session Windows](src/main/java/kafka_streams/windowing/session_windows) 🛋️❌
+#### 2- [Sliding Windows](src/main/java/kafka_streams/windowing/sliding_windows) 🎚️
+#### 3- [Session Windows](src/main/java/kafka_streams/windowing/session_windows) 🛋️
 #### 4- [Hopping Windows](src/main/java/kafka_streams/windowing/hopping_windows) 🔄
 
 ### 5. Other
@@ -147,9 +147,10 @@ This repository provides categorized, real-world examples of **stream processing
 #### 4- [GlobalKTable Join](src/main/java/kafka_streams/other/global_ktable_join) 🌍
 #### 5- [Repartitioning Streams](src/main/java/kafka_streams/other/repartitioning_streams) 🔄
 
+
 ### 6. Real-World Use Cases
-#### 1- [Transaction Monitoring](src/main/java/kafka_streams/usecases/transactions) 💳❌
-#### 2- [Clickstream Analytics](src/main/java/kafka_streams/usecases/clickstream) 🖱️❌
-#### 3- [IoT Sensor Aggregation](src/main/java/kafka_streams/usecases/iot) 📡❌
-#### 4- [User Sessionization](src/main/java/kafka_streams/usecases/sessionization) 👤❌
-#### 5- [Log Enrichment](src/main/java/kafka_streams/usecases/log_enrichment) 🧾❌
+#### 1- [Transaction Monitoring](src/main/java/kafka_streams/real_world_use_cases/transaction_monitoring) 💳
+#### 2- [Clickstream Analytics](src/main/java/kafka_streams/real_world_use_cases/clickstream_analytics) 🖱️❌
+#### 3- [IoT Sensor Aggregation](src/main/java/kafka_streams/real_world_use_cases/iot_sensor_aggregation) 📡❌
+#### 4- [User Sessionization](src/main/java/kafka_streams/real_world_use_cases/user_sessionization) 👤❌
+#### 5- [Log Enrichment](src/main/java/kafka_streams/real_world_use_cases/log_enrichment) 🧾❌
