@@ -1,4 +1,4 @@
-package kafka_streams.other.repartitioning_streams;
+package kafka_streams.real_world_use_cases.clickstream_analytics;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,7 +11,10 @@ import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.Topology;
-import org.apache.kafka.streams.kstream.*;
+import org.apache.kafka.streams.kstream.Consumed;
+import org.apache.kafka.streams.kstream.KStream;
+import org.apache.kafka.streams.kstream.KTable;
+import org.apache.kafka.streams.kstream.Produced;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -21,19 +24,27 @@ import java.util.*;
 
 public class Solution {
 
-    record Purchase(String name, String item, Integer amount) {
+    record ClickEvent(String userId, String page) {
         @Override
         public String toString() {
-            return "Purchases{" +
-                    "name='" + name + '\'' +
-                    ", item='" + item + '\'' +
-                    ", amount=" + amount +
+            return "ClickEvent{" +
+                    "userId='" + userId + '\'' +
+                    ", page='" + page + '\'' +
                     '}';
         }
     }
 
+    record PageView(String page, Long count) {
+        @Override
+        public String toString() {
+            return "PageViewCount{" +
+                    "page='" + page + '\'' +
+                    ", count=" + count +
+                    '}';
+        }
+    }
 
-    public static final String APPLICATION_NAME = "repartitioning_streams";
+    public static final String APPLICATION_NAME = "clickstream_analytics";
     private static final String APPLICATION_ID = APPLICATION_NAME + "_" + UUID.randomUUID();
     private static final String CLIENT_ID = APPLICATION_NAME + "_client";
     public static final String BOOTSTRAP_SERVERS = "localhost:9092";
@@ -47,25 +58,20 @@ public class Solution {
         StreamsBuilder builder = new StreamsBuilder();
 
         // variable
-        Consumed<String, Purchase> consumedKTableCustomer = Consumed.with(
+        Consumed<String, ClickEvent> consumedKStreamClickEvent = Consumed.with(
                 Serdes.String(),
-                getSerde(new TypeReference<Purchase>() {
+                getSerde(new TypeReference<ClickEvent>() {
                 })
         );
-        KeyValueMapper<String, Purchase, String> keyValueMapper = ((key, value) -> value.name);
-        Grouped<String, Purchase> grouped = Grouped.with(
+        Produced<String, PageView> produced = Produced.with(
                 Serdes.String(),
-                getSerde(new TypeReference<Purchase>() {
+                getSerde(new TypeReference<PageView>() {
                 })
-        );
-        Produced<String, Integer> produced = Produced.with(
-                Serdes.String(),
-                Serdes.Integer()
         );
 
         // input
-        KStream<String, Purchase> inputKStreamPurchase = builder
-                .stream(inputTopic, consumedKTableCustomer)
+        KStream<String, ClickEvent> inputKStream = builder
+                .stream(inputTopic, consumedKStreamClickEvent)
                 .peek((key, value) ->
                         System.out.println(
                                 "input from topic(" + inputTopic
@@ -75,18 +81,15 @@ public class Solution {
                 );
 
         // transform
-        KStream<String, Purchase> inputKStreamPurchaseRekey = inputKStreamPurchase
-                .selectKey(keyValueMapper);
-        KTable<String, Integer> inputKTable = inputKStreamPurchaseRekey
-                .groupByKey(grouped)
-                .aggregate(
-                        () -> 0,
-                        (key, value, sum) -> sum + value.amount,
-                        Materialized.with(Serdes.String(), Serdes.Integer())
-                );
+        KTable<String, PageView> inputKTableCount = inputKStream
+                //.map((key, value) -> KeyValue.pair(value.page, null))
+                .selectKey((key, value) -> value.page)
+                .groupByKey()
+                .count()
+                .mapValues((key, value) -> new PageView(key, value));
 
         // output
-        inputKTable
+        inputKTableCount
                 .toStream()
                 .peek((key, value) ->
                         System.out.println(
