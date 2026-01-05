@@ -26,7 +26,7 @@ public class Solution {
     private static final String CLIENT_ID = APPLICATION_NAME + "_client";
     public static final String BOOTSTRAP_SERVERS = "localhost:9092";
 
-    private static Path STATE_DIR;
+    private Path STATE_DIR;
 
     private KafkaStreams streams;
 
@@ -126,7 +126,7 @@ public class Solution {
         }
     }
 
-    private static Properties getStreamsConfiguration() {
+    private Properties getStreamsConfiguration() {
 
         Properties props = new Properties();
 
@@ -155,7 +155,7 @@ public class Solution {
         return props;
     }
 
-    public static <T> Serde<T> getSerde(TypeReference<T> typeRef) {
+    public <T> Serde<T> getSerde(TypeReference<T> typeRef) {
         ObjectMapper mapper = new ObjectMapper();
         return Serdes.serdeFrom(
                 (topic, data) -> {
@@ -177,7 +177,7 @@ public class Solution {
         );
     }
 
-    public static void createTopic(String topic) {
+    public void createTopic(String topic) {
         try (AdminClient admin = AdminClient.create(Map.of(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS))) {
             admin.createTopics(List.of(new NewTopic(topic, 1, (short) 1))).all().get();
         } catch (Exception exception) {
@@ -185,7 +185,7 @@ public class Solution {
         }
     }
 
-    public static void deleteTopic(String topic) {
+    public void deleteTopic(String topic) {
         try (AdminClient admin = AdminClient.create(Map.of(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS))) {
             admin.deleteTopics(List.of(topic)).all().get();
         } catch (Exception exception) {

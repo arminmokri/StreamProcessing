@@ -13,6 +13,7 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 import java.time.Duration;
 import java.util.*;
@@ -20,23 +21,24 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class SolutionTest {
     private static final String INPUT_TOPIC = Solution.APPLICATION_NAME + "_input";
     private static final String OUTPUT_TOPIC = Solution.APPLICATION_NAME + "_output";
 
-    private static Solution solution;
-    private static KafkaProducer<String, String> producer;
-    private static KafkaConsumer<String, Long> consumer;
+    private Solution solution;
+    private KafkaProducer<String, String> producer;
+    private KafkaConsumer<String, Long> consumer;
 
     @BeforeAll
-    public static void setup() throws Exception {
+    public void setup() throws Exception {
         solution = new Solution();
 
         // Clean up topics before starting
-        Solution.deleteTopic(INPUT_TOPIC);
-        Solution.deleteTopic(OUTPUT_TOPIC);
-        Solution.createTopic(INPUT_TOPIC);
-        Solution.createTopic(OUTPUT_TOPIC);
+        solution.deleteTopic(INPUT_TOPIC);
+        solution.deleteTopic(OUTPUT_TOPIC);
+        solution.createTopic(INPUT_TOPIC);
+        solution.createTopic(OUTPUT_TOPIC);
 
         // Start Kafka Streams
         solution.startStream(INPUT_TOPIC, OUTPUT_TOPIC);
@@ -59,7 +61,7 @@ public class SolutionTest {
     }
 
     @AfterAll
-    public static void cleanup() {
+    public void cleanup() {
         if (Objects.nonNull(producer)) {
             producer.close();
         }
@@ -68,8 +70,8 @@ public class SolutionTest {
         }
 
         solution.stopStream();
-        Solution.deleteTopic(INPUT_TOPIC);
-        Solution.deleteTopic(OUTPUT_TOPIC);
+        solution.deleteTopic(INPUT_TOPIC);
+        solution.deleteTopic(OUTPUT_TOPIC);
     }
 
     @Test
@@ -140,7 +142,7 @@ public class SolutionTest {
         producer.flush();
     }
 
-    private static List<ConsumerRecord<String, Long>> readOutput(String topic, int expectedKeys, long timeoutMillis) {
+    private List<ConsumerRecord<String, Long>> readOutput(String topic, int expectedKeys, long timeoutMillis) {
 
         consumer.subscribe(List.of(topic));
 
