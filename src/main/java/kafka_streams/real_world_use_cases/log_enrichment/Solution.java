@@ -2,9 +2,6 @@ package kafka_streams.real_world_use_cases.log_enrichment;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.kafka.clients.admin.AdminClient;
-import org.apache.kafka.clients.admin.AdminClientConfig;
-import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
@@ -60,16 +57,10 @@ public class Solution {
         private Serde<EnrichedLog> enrichedLogSerde;
         private final GeoIpService geoIpService;
 
-        LogEnrichmentProcessor(GeoIpService geoIpService) {
+        LogEnrichmentProcessor(GeoIpService geoIpService, Serde<Log> logSerde, Serde<EnrichedLog> enrichedLogSerde) {
             this.geoIpService = geoIpService;
-            logSerde = getSerde(
-                    new TypeReference<Log>() {
-                    }
-            );
-            enrichedLogSerde = getSerde(
-                    new TypeReference<EnrichedLog>() {
-                    }
-            );
+            this.logSerde = logSerde;
+            this.enrichedLogSerde = enrichedLogSerde;
         }
 
         @Override
@@ -100,14 +91,14 @@ public class Solution {
             if (country.isPresent()) {
                 EnrichedLog enrichedLog = new EnrichedLog(valueLog.ip, valueLog.message, country.get());
                 System.out.println(
-                        "output to topic"
+                        "output to topic (API call Successes)"
                                 + " -> key='" + (Objects.nonNull(key) ? key : "null")
                                 + "' value='" + (Objects.nonNull(enrichedLog) ? enrichedLog : "null") + "'"
                 );
                 context().forward(key, new String(enrichedLogSerde.serializer().serialize(null, enrichedLog)));
             } else {
                 System.out.println(
-                        "(API call Failed) send to dlq-log-store"
+                        "send to dlq-log-store (API call Failed) "
                                 + " -> key='" + (Objects.nonNull(key) ? key : "null")
                                 + "' value='" + (Objects.nonNull(value) ? value : "null") + "'"
                 );
@@ -124,7 +115,7 @@ public class Solution {
                     Optional<String> country = geoIpService.getCountry(valueLog.ip);
 
                     System.out.println(
-                            "input from dlq-log-store"
+                            "(DLQ) input from dlq-log-store"
                                     + " -> key='" + (Objects.nonNull(key) ? key : "null")
                                     + "' value='" + (Objects.nonNull(valueLog) ? valueLog : "null") + "'"
                     );
@@ -132,14 +123,14 @@ public class Solution {
                     if (country.isPresent()) {
                         EnrichedLog enrichedLog = new EnrichedLog(valueLog.ip, valueLog.message, country.get());
                         System.out.println(
-                                "output to topic (DLQ)"
+                                "(DLQ) output to topic (API call Successes)"
                                         + " -> key='" + (Objects.nonNull(key) ? key : "null")
                                         + "' value='" + (Objects.nonNull(enrichedLog) ? enrichedLog : "null") + "'"
                         );
                         context().forward(entry.key, new String(enrichedLogSerde.serializer().serialize(null, enrichedLog)));
                     } else {
                         System.out.println(
-                                "(API call Failed) delete from dlq-log-store"
+                                "(DLQ) delete from dlq-log-store (API call Failed)"
                                         + " -> key='" + (Objects.nonNull(key) ? key : "null")
                                         + "' value='" + (Objects.nonNull(valueLog) ? valueLog : "null") + "'"
                         );
@@ -156,7 +147,7 @@ public class Solution {
     private static final String CLIENT_ID = APPLICATION_NAME + "_client";
     public static final String BOOTSTRAP_SERVERS = "localhost:9092";
 
-    private static Path STATE_DIR;
+    private Path STATE_DIR;
 
     private KafkaStreams streams;
 
@@ -176,6 +167,14 @@ public class Solution {
                         Serdes.String(),
                         Serdes.String()
                 );
+        Serde<Solution.Log> logSerde = getSerde(
+                new TypeReference<Solution.Log>() {
+                }
+        );
+        Serde<Solution.EnrichedLog> enrichedLogSerde = getSerde(
+                new TypeReference<Solution.EnrichedLog>() {
+                }
+        );
 
         // Source topic
         topology.addSource(
@@ -186,7 +185,7 @@ public class Solution {
         // Add processor with state store
         topology.addProcessor(
                 "LogEnrichmentProcessor",
-                () -> new LogEnrichmentProcessor(geoIpService),
+                () -> new LogEnrichmentProcessor(geoIpService, logSerde, enrichedLogSerde),
                 "Source"
         );
 
@@ -248,7 +247,7 @@ public class Solution {
         }
     }
 
-    private static Properties getStreamsConfiguration() {
+    private Properties getStreamsConfiguration() {
 
         Properties props = new Properties();
 
@@ -277,7 +276,7 @@ public class Solution {
         return props;
     }
 
-    public static <T> Serde<T> getSerde(TypeReference<T> typeRef) {
+    public <T> Serde<T> getSerde(TypeReference<T> typeRef) {
         ObjectMapper mapper = new ObjectMapper();
         return Serdes.serdeFrom(
                 (topic, data) -> {
@@ -297,22 +296,6 @@ public class Solution {
                     }
                 }
         );
-    }
-
-    public static void createTopic(String topic) {
-        try (AdminClient admin = AdminClient.create(Map.of(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS))) {
-            admin.createTopics(List.of(new NewTopic(topic, 1, (short) 1))).all().get();
-        } catch (Exception exception) {
-
-        }
-    }
-
-    public static void deleteTopic(String topic) {
-        try (AdminClient admin = AdminClient.create(Map.of(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS))) {
-            admin.deleteTopics(List.of(topic)).all().get();
-        } catch (Exception exception) {
-
-        }
     }
 }
 

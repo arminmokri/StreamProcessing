@@ -1,8 +1,5 @@
 package kafka_streams.aggregation.group_by_key_and_count;
 
-import org.apache.kafka.clients.admin.AdminClient;
-import org.apache.kafka.clients.admin.AdminClientConfig;
-import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
@@ -13,7 +10,10 @@ import org.apache.kafka.streams.kstream.*;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Comparator;
+import java.util.Objects;
+import java.util.Properties;
+import java.util.UUID;
 
 public class Solution {
 
@@ -139,22 +139,6 @@ public class Solution {
         props.put(StreamsConfig.STATE_DIR_CONFIG, STATE_DIR.toString());
 
         return props;
-    }
-
-    public void createTopic(String topic) {
-        try (AdminClient admin = AdminClient.create(Map.of(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS))) {
-            admin.createTopics(List.of(new NewTopic(topic, 1, (short) 1))).all().get();
-        } catch (Exception exception) {
-
-        }
-    }
-
-    public void deleteTopic(String topic) {
-        try (AdminClient admin = AdminClient.create(Map.of(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS))) {
-            admin.deleteTopics(List.of(topic)).all().get();
-        } catch (Exception exception) {
-
-        }
     }
 }
 

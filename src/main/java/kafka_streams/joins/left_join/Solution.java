@@ -2,9 +2,6 @@ package kafka_streams.joins.left_join;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.kafka.clients.admin.AdminClient;
-import org.apache.kafka.clients.admin.AdminClientConfig;
-import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
@@ -233,22 +230,6 @@ public class Solution {
                     }
                 }
         );
-    }
-
-    public void createTopic(String topic) {
-        try (AdminClient admin = AdminClient.create(Map.of(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS))) {
-            admin.createTopics(List.of(new NewTopic(topic, 1, (short) 1))).all().get();
-        } catch (Exception exception) {
-
-        }
-    }
-
-    public void deleteTopic(String topic) {
-        try (AdminClient admin = AdminClient.create(Map.of(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS))) {
-            admin.deleteTopics(List.of(topic)).all().get();
-        } catch (Exception exception) {
-
-        }
     }
 }
 

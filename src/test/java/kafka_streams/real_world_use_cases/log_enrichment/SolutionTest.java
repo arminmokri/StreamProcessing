@@ -1,6 +1,9 @@
 package kafka_streams.real_world_use_cases.log_enrichment;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import org.apache.kafka.clients.admin.AdminClient;
+import org.apache.kafka.clients.admin.AdminClientConfig;
+import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -45,10 +48,10 @@ public class SolutionTest {
         solution = new Solution(geoIpService);
 
         // Clean up topics before starting
-        Solution.deleteTopic(INPUT_TOPIC);
-        Solution.deleteTopic(OUTPUT_TOPIC);
-        Solution.createTopic(INPUT_TOPIC);
-        Solution.createTopic(OUTPUT_TOPIC);
+        deleteTopic(INPUT_TOPIC);
+        deleteTopic(OUTPUT_TOPIC);
+        createTopic(INPUT_TOPIC);
+        createTopic(OUTPUT_TOPIC);
 
         // Start Kafka Streams
         solution.startStream(INPUT_TOPIC, OUTPUT_TOPIC);
@@ -80,8 +83,8 @@ public class SolutionTest {
         }
 
         solution.stopStream();
-        Solution.deleteTopic(INPUT_TOPIC);
-        Solution.deleteTopic(OUTPUT_TOPIC);
+        deleteTopic(INPUT_TOPIC);
+        deleteTopic(OUTPUT_TOPIC);
     }
 
     @Test
@@ -90,7 +93,7 @@ public class SolutionTest {
         // variable
 
         // Log(String ip, String message) - INPUT_TOPIC
-        Serde<Solution.Log> logSerde = Solution.getSerde(
+        Serde<Solution.Log> logSerde = solution.getSerde(
                 new TypeReference<Solution.Log>() {
                 }
         );
@@ -99,7 +102,7 @@ public class SolutionTest {
         Solution.Log log2 = new Solution.Log("37.156.13.178", "logout");
 
         // EnrichedLog(String ip, String message, String country) - OUTPUT_TOPIC
-        Serde<Solution.EnrichedLog> enrichedLogSerde = Solution.getSerde(
+        Serde<Solution.EnrichedLog> enrichedLogSerde = solution.getSerde(
                 new TypeReference<Solution.EnrichedLog>() {
                 }
         );
@@ -137,7 +140,7 @@ public class SolutionTest {
         // variable
 
         // Log(String ip, String message) - INPUT_TOPIC
-        Serde<Solution.Log> logSerde = Solution.getSerde(
+        Serde<Solution.Log> logSerde = solution.getSerde(
                 new TypeReference<Solution.Log>() {
                 }
         );
@@ -145,7 +148,7 @@ public class SolutionTest {
         Solution.Log log1 = new Solution.Log("108.162.165.210", "login");
 
         // EnrichedLog(String ip, String message, String country) - OUTPUT_TOPIC
-        Serde<Solution.EnrichedLog> enrichedLogSerde = Solution.getSerde(
+        Serde<Solution.EnrichedLog> enrichedLogSerde = solution.getSerde(
                 new TypeReference<Solution.EnrichedLog>() {
                 }
         );
@@ -179,7 +182,7 @@ public class SolutionTest {
         // variable
 
         // Log(String ip, String message) - INPUT_TOPIC
-        Serde<Solution.Log> logSerde = Solution.getSerde(
+        Serde<Solution.Log> logSerde = solution.getSerde(
                 new TypeReference<Solution.Log>() {
                 }
         );
@@ -231,6 +234,8 @@ public class SolutionTest {
             }
         }
 
+        //consumer.unsubscribe();
+
         return results;
     }
 
@@ -240,5 +245,21 @@ public class SolutionTest {
                 .reduce((first, second) -> second)
                 .map(record -> record.value())
                 .orElse(null);
+    }
+
+    private void createTopic(String topic) {
+        try (AdminClient admin = AdminClient.create(Map.of(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, Solution.BOOTSTRAP_SERVERS))) {
+            admin.createTopics(List.of(new NewTopic(topic, 1, (short) 1))).all().get();
+        } catch (Exception exception) {
+
+        }
+    }
+
+    private void deleteTopic(String topic) {
+        try (AdminClient admin = AdminClient.create(Map.of(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, Solution.BOOTSTRAP_SERVERS))) {
+            admin.deleteTopics(List.of(topic)).all().get();
+        } catch (Exception exception) {
+
+        }
     }
 }

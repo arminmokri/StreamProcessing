@@ -1,6 +1,9 @@
 package kafka_streams.other.branching_streams;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import org.apache.kafka.clients.admin.AdminClient;
+import org.apache.kafka.clients.admin.AdminClientConfig;
+import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -17,10 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
 import java.time.Duration;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Properties;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -39,12 +39,12 @@ public class SolutionTest {
         solution = new Solution();
 
         // Clean up topics before starting
-        solution.deleteTopic(INPUT_TOPIC);
-        solution.deleteTopic(OUTPUT_TOPIC_A);
-        solution.deleteTopic(OUTPUT_TOPIC_B);
-        solution.createTopic(INPUT_TOPIC);
-        solution.createTopic(OUTPUT_TOPIC_A);
-        solution.createTopic(OUTPUT_TOPIC_B);
+        deleteTopic(INPUT_TOPIC);
+        deleteTopic(OUTPUT_TOPIC_A);
+        deleteTopic(OUTPUT_TOPIC_B);
+        createTopic(INPUT_TOPIC);
+        createTopic(OUTPUT_TOPIC_A);
+        createTopic(OUTPUT_TOPIC_B);
 
         // Start Kafka Streams
         solution.startStream(INPUT_TOPIC, OUTPUT_TOPIC_A, OUTPUT_TOPIC_B);
@@ -76,9 +76,9 @@ public class SolutionTest {
         }
 
         solution.stopStream();
-        solution.deleteTopic(INPUT_TOPIC);
-        solution.deleteTopic(OUTPUT_TOPIC_A);
-        solution.deleteTopic(OUTPUT_TOPIC_B);
+        deleteTopic(INPUT_TOPIC);
+        deleteTopic(OUTPUT_TOPIC_A);
+        deleteTopic(OUTPUT_TOPIC_B);
     }
 
     @Test
@@ -168,5 +168,21 @@ public class SolutionTest {
                 .reduce((first, second) -> second)
                 .map(record -> record.value())
                 .orElse(null);
+    }
+
+    private void createTopic(String topic) {
+        try (AdminClient admin = AdminClient.create(Map.of(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, Solution.BOOTSTRAP_SERVERS))) {
+            admin.createTopics(List.of(new NewTopic(topic, 1, (short) 1))).all().get();
+        } catch (Exception exception) {
+
+        }
+    }
+
+    private void deleteTopic(String topic) {
+        try (AdminClient admin = AdminClient.create(Map.of(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, Solution.BOOTSTRAP_SERVERS))) {
+            admin.deleteTopics(List.of(topic)).all().get();
+        } catch (Exception exception) {
+
+        }
     }
 }
