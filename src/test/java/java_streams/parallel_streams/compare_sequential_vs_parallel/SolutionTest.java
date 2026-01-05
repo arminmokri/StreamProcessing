@@ -24,7 +24,7 @@ public class SolutionTest {
     public void testParallelCase() {
         List<Integer> nums = IntStream.rangeClosed(1, 150_000_000).boxed().collect(Collectors.toList());
         long start = System.currentTimeMillis();
-        assertEquals(11250000075000000L, solution.parallel(nums));
+        assertEquals(11_250_000_075_000_000L, solution.parallel(nums));
         long end = System.currentTimeMillis();
         System.out.println("testParallelCase: " + (end - start) + " ms");
     }
@@ -33,7 +33,7 @@ public class SolutionTest {
     public void testSequentialCase() {
         List<Integer> nums = IntStream.rangeClosed(1, 150_000_000).boxed().collect(Collectors.toList());
         long start = System.currentTimeMillis();
-        assertEquals(11250000075000000L, solution.sequential(nums));
+        assertEquals(11_250_000_075_000_000L, solution.sequential(nums));
         long end = System.currentTimeMillis();
         System.out.println("testSequentialCase: " + (end - start) + " ms");
     }
