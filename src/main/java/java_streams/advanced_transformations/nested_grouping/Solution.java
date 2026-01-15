@@ -11,6 +11,8 @@ public class Solution {
 
     }
 
+    // [S("Alice", "CS", 2023), S("Bob", "CS", 2023), S("Eve", "Math", 2022)] ->
+    // {"CS", {2023, ["Alice", "Bob"]}, "Math", {2022, ["Eve"]}}
     public Map<String, Map<Integer, List<String>>> nestedGrouping(List<Student> list) {
         return list.stream()
                 .collect(Collectors.groupingBy(

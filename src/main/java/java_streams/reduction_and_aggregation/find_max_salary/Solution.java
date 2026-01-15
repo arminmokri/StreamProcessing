@@ -4,6 +4,7 @@ import java.util.List;
 
 public class Solution {
 
+    // [5000, 7000, 9000] -> 9000
     public Integer findMaxSalary(List<Integer> list) {
         return list.stream()
                 .mapToInt(Integer::intValue)

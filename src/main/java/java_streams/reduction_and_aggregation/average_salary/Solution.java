@@ -5,6 +5,7 @@ import java.util.List;
 
 public class Solution {
 
+    // [5000, 7000, 9000] -> 7000.0
     public Double averageSalary(List<Integer> list) {
         return list.stream()
                 .mapToInt(Integer::intValue)

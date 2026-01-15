@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 public class Solution {
 
+    // {"a", 1, "b", 2} -> ["a"=1, "b"=2]
     public List<Map.Entry> collectMapToList(Map<String, Integer> map) {
         return map
                 .entrySet()

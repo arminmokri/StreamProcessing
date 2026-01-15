@@ -11,6 +11,10 @@ public class Solution {
 
     }
 
+    // [L("alice", "2025-07-30T08:00"), L("bob", "2025-07-30T08:15"),
+    // L("alice", "2025-07-30T09:00"), L("alice", "2025-07-30T10:00")
+    // L("bob", "2025-07-30T11:00")] ->
+    // {"alice", 3L, "bob", 2L}
     public Map<String, Long> userLoginStatistics(List<Login> list) {
         return list.stream()
                 .collect(

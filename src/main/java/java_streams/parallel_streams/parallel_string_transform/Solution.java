@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 public class Solution {
 
+    // ["a", "b", "c"] -> ["A", "B", "C"]
     public List<String> parallelStringTransform(List<String> list) {
         return list.parallelStream()
                 .map(String::toUpperCase)

@@ -7,6 +7,7 @@ import java.util.stream.Stream;
 
 public class Solution {
 
+    // [10, 20], [20, 30] -> [10, 20, 20, 30]
     public List<Integer> mergeStreamSources(List<Integer> list1, List<Integer> list2) {
         return Stream
                 .concat(list1.stream(), list2.stream())

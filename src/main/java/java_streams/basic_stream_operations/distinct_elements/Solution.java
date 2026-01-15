@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 public class Solution {
 
+    // [1, 2, 2, 3, 3, 3] -> [1, 2, 3]
     public List<Integer> distinctElements(List<Integer> list) {
         return list.stream()
                 .distinct()

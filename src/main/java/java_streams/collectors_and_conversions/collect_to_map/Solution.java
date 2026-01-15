@@ -20,6 +20,8 @@ public class Solution {
 
     }
 
+    // [E(1, "John", 5000), E(2, "Jane", 6000)] ->
+    // {1L, 5000f, 2L, 6000f}
     public Map<Long, Float> collectToMap(List<Employee> list) {
         return list.stream()
                 .collect(Collectors.toMap(

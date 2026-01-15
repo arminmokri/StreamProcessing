@@ -10,6 +10,8 @@ public class Solution {
     record Item(String category, Integer price) {
     }
 
+    // [I("A", 10), I("A", 20), I("B", 5), I("B", 15), I("C", 7)] ->
+    // {"A", 30, "B", 20, "C", 7}
     public Map<String, Integer> collectorWithDownstream(List<Item> list) {
         return list.stream()
                 .collect(

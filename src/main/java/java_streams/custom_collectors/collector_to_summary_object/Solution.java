@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 
 public class Solution {
 
+    // [10, 20, 30, 40, 50] ->
+    // "Count: 5\nSum: 150\nAverage: 30.0\nMin: 10\nMax: 50\n"
     public void collectorToSummaryObject(List<Integer> list) {
         IntSummaryStatistics stats =
                 list.stream()

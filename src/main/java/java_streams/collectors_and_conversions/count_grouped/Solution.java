@@ -23,6 +23,9 @@ public class Solution {
 
     }
 
+    // [S(1, "John", 85f), S(2, "Jane", 76f),
+    // S(3, "Andy", 85f), S(4, "Micheal", 76f)] ->
+    // {85f, 2L, 76f, 2L}
     public Map<Float, Long> groupByField(List<Student> list) {
         return list.stream()
                 .collect(Collectors.groupingBy(Student::grade, Collectors.counting()));

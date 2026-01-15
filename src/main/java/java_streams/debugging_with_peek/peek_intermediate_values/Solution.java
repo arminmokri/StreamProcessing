@@ -6,6 +6,9 @@ import java.util.stream.Collectors;
 
 public class Solution {
 
+    // [1, 2, 3, 4, 5] ->
+    // "Filtered: 2\nMapped: 20\n"
+    // "Filtered: 4\nMapped: 40\n"
     public List<Integer> peekIntermediateValues(List<Integer> list) {
         return list.stream()
                 .filter(n -> n % 2 == 0)

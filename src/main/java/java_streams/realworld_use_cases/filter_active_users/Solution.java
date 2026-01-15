@@ -11,6 +11,9 @@ public class Solution {
 
     }
 
+    // [U("Alice", TRUE), U("Bob", FALSE),
+    // U("Charlie", TRUE), U("Diana", FALSE)] ->
+    // [U("Alice", TRUE), U("Charlie", TRUE)]
     public List<User> filterActiveUsers(List<User> list) {
         return list.stream()
                 .filter(user -> Objects.nonNull(user) && Objects.nonNull(user.active) && user.active)

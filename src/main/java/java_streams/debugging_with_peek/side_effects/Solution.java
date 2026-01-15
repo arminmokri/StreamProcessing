@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 public class Solution {
 
+    // [1, 2, 3] -> [2, 4, 6]
     public List<Integer> sideEffects(List<Integer> list) {
         List<Integer> sideEffectList = new ArrayList<>();
         list.stream()

@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 public class Solution {
 
 
+    // ["a", "b", "a"] -> ["a", "b"]
     public Set<String> collectToSet(List<String> list) {
         return list.stream()
                 .collect(Collectors.toSet());

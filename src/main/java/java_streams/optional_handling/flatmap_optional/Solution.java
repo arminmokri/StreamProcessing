@@ -22,6 +22,7 @@ public class Solution {
         }
     }
 
+    // O(U(O(A(O(C("Berlin")))))) -> O("Berlin")
     public Optional<String> flatMapOptional(Optional<User> optional) {
         return optional
                 .flatMap(User::getAddress)

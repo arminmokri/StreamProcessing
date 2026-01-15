@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 public class Solution {
 
+    // ["hello", "world"] -> ["HELLO", "WORLD"]
     public List<String> mapToUppercase(List<String> list) {
         return list.stream()
                 .map(String::toUpperCase)

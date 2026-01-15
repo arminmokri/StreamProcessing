@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 public class Solution {
 
+    // [[1, 2], [3, 4], [5]] -> [1, 2, 3, 4, 5]
     public List<Integer> flatmapNestedLists(List<List<Integer>> lists) {
         return lists.stream()
                 .flatMap(List::stream)

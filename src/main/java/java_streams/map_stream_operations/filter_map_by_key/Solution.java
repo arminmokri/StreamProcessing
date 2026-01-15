@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 
 public class Solution {
 
+    // {"one", 1, "two", 2, "three", 3}, t ->
+    // {"two", 2, "three", 3}
     public Map<String, Integer> filterMapByKey(Map<String, Integer> map, String startsWith) {
         return map
                 .entrySet()

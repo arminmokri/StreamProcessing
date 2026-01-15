@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 public class Solution {
 
+    // [1, 4, 5, 10] -> [4, 10]
     public List<Integer> filterEvenNumbers(List<Integer> list) {
         return list.stream()
                 .filter(i -> i % 2 == 0)

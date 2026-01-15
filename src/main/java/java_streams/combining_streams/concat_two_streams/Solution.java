@@ -7,6 +7,7 @@ import java.util.stream.Stream;
 
 public class Solution {
 
+    // [1, 2], [3, 4] -> [1, 2, 3, 4]
     public List<Integer> concatTwoStreams(List<Integer> list1, List<Integer> list2) {
         return Stream
                 .concat(list1.stream(), list2.stream())

@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 public class Solution {
 
+    // [1, 2, ..., 100] -> [2, 4, ..., 100]
     public List<Integer> parallelFilterAndCollect(List<Integer> list) {
         return list
                 .parallelStream()

@@ -23,6 +23,10 @@ public class Solution {
 
     }
 
+    // [E(1, "John", 4000, "software"), E(2, "Jane", 5000, "network"),
+    // E(3, "Andy", 6000, "software"), E(4, "Micheal", 7000, "network")]
+    // {"software", [E(1, "John", 4000, "software"), E(3, "Andy", 6000, "software")],
+    // "network", [E(2, "Jane", 5000, "network"), E(4, "Micheal", 7000, "network")]}
     public Map<String, List<Employee>> groupByField(List<Employee> list) {
         return list.stream()
                 .collect(Collectors.groupingBy(Employee::department));

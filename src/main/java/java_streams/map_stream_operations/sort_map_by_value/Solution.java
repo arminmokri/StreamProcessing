@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 
 public class Solution {
 
+    // {"x", 30, "y", 10, "z", 20} ->
+    // {"y", 10, "z", 20, "x", 30}
     public Map<String, Integer> sortMapByValue(Map<String, Integer> map) {
         return map.entrySet()
                 .stream()

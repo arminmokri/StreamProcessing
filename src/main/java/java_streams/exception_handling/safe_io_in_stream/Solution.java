@@ -9,6 +9,9 @@ import java.util.stream.Stream;
 
 public class Solution {
 
+    // ["file1.txt", "file2.txt"] ->
+    // "Files (file1.txt) in Java might be tricky, but it is fun enough!\n"
+    // "Files (file2.txt) in Java might be tricky, but it is fun enough!\n"
     public void safeIOInStream(List<String> list) {
         list.stream()
                 .flatMap(this::safeReadLines)

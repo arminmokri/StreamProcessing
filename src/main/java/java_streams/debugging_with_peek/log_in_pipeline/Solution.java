@@ -6,6 +6,10 @@ import java.util.stream.Collectors;
 
 public class Solution {
 
+    // ["apple", "banana", "cherry"] ->
+    // "Original: apple\nMapped to length: 5\n"
+    // "Original: banana\nMapped to length: 6\nFiltered length > 5: 6\n"
+    // "Original: cherry\nMapped to length: 6\nFiltered length > 5: 6\n"
     public List<Integer> logInPipeline(List<String> list, Integer filterSize) {
         return list.stream()
                 .peek(s -> System.out.println("Original: " + s))

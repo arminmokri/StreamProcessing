@@ -11,6 +11,10 @@ public class Solution {
 
     }
 
+    // [O("Alice", 120.0), O("Bob", 90.5),
+    // O("Alice", 130.0), O("Bob", 50.0),
+    // O("Charlie", 200.0)] ->
+    // {Alice", 250.0, "Bob", 140.5, "Charlie", 200.0}
     public Map<String, Double> sumOrdersPerCustomer(List<Order> list) {
         return list.stream()
                 .collect(

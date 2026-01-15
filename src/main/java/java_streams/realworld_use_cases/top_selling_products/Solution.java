@@ -10,6 +10,9 @@ public class Solution {
 
     }
 
+    // [P("Laptop", 50), P("Smartphone", 120),
+    // P("Headphones", 120), P("Tablet", 80)] ->
+    // [P("Smartphone", 120), P("Headphones", 120)]
     public List<Product> topSellingProducts(List<Product> list) {
 
         Integer max = list.stream()

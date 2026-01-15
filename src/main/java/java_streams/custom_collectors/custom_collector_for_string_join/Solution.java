@@ -7,12 +7,14 @@ import java.util.stream.Collector;
 
 public class Solution {
 
+    // ["apple", "banana", "cherry"] ->
+    // "apple,banana,cherry"
     public String customCollectorForStringJoin(List<String> list) {
         return list.stream()
                 .collect(joiningWithComma());
     }
 
-    public Collector<String, StringJoiner, String> joiningWithComma() {
+    private Collector<String, StringJoiner, String> joiningWithComma() {
         return Collector.of(
                 () -> new StringJoiner(","),    // supplier
                 StringJoiner::add,                      // accumulator

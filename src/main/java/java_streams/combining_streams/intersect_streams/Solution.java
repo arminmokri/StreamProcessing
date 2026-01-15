@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 public class Solution {
 
+    // [1, 2, 3], [2, 3, 4] -> [2, 3]
     public List<Integer> intersectStreams(List<Integer> list1, List<Integer> list2) {
 
         Set<Integer> set2 = Set.copyOf(list2);

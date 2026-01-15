@@ -19,6 +19,8 @@ public class Solution {
 
     }
 
+    // ["1,John,5000", "2,Jane,6000"] ->
+    // [E(1, "John", 5000), E(2, "Jane", 6000)]
     public List<Employee> parseCSVToObject(List<String> list) {
         return list
                 .stream()

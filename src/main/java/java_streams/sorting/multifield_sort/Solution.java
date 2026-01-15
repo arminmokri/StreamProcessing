@@ -20,6 +20,10 @@ public class Solution {
 
     }
 
+    // [P("John", 22), P("Alice", 28),
+    // P("John", 20), P("Alice", 19)] ->
+    // [P("Alice", 19), P("Alice", 28),
+    // P("John", 20), P("John", 22)]
     public List<Person> multiFieldSort(List<Person> list) {
         return list.stream()
                 .sorted(Comparator.comparing(Person::name).thenComparing(Person::age))

@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 
 public class Solution {
 
+    // ["10", "abc", "20", "xyz", "30"] ->
+    // [10, 20, 30]
     public List<Integer> handleParseException(List<String> list) {
         return list.stream()
                 .map(s -> {

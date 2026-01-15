@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 public class Solution {
 
+    // [5, 3, 1, 2, 3, 5] -> [1, 2, 3, 5]
     public List<Integer> distinctAndSorted(List<Integer> list) {
         return list.stream()
                 .distinct()
