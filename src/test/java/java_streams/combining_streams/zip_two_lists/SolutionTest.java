@@ -4,8 +4,8 @@ package java_streams.combining_streams.zip_two_lists;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.util.AbstractMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -24,9 +24,9 @@ public class SolutionTest {
         List<String> list1 = List.of("a", "b");
         List<Integer> list2 = List.of(1, 2);
 
-        List<AbstractMap.SimpleEntry<String, Integer>> expected = List.of(
-                new AbstractMap.SimpleEntry<>("a", 1),
-                new AbstractMap.SimpleEntry<>("b", 2)
+        List<Map.Entry<String, Integer>> expected = List.of(
+                Map.entry("a", 1),
+                Map.entry("b", 2)
         );
 
         assertEquals(expected, solution.concatTwoStreams(list1, list2));
@@ -37,9 +37,9 @@ public class SolutionTest {
         List<String> list1 = List.of("a", "b", "c");
         List<Integer> list2 = List.of(1, 2);
 
-        List<AbstractMap.SimpleEntry<String, Integer>> expected = List.of(
-                new AbstractMap.SimpleEntry<>("a", 1),
-                new AbstractMap.SimpleEntry<>("b", 2)
+        List<Map.Entry<String, Integer>> expected = List.of(
+                Map.entry("a", 1),
+                Map.entry("b", 2)
         );
 
         assertEquals(expected, solution.concatTwoStreams(list1, list2));
@@ -50,8 +50,8 @@ public class SolutionTest {
         List<String> list1 = List.of("a");
         List<Integer> list2 = List.of(1, 2, 3);
 
-        List<AbstractMap.SimpleEntry<String, Integer>> expected = List.of(
-                new AbstractMap.SimpleEntry<>("a", 1)
+        List<Map.Entry<String, Integer>> expected = List.of(
+                Map.entry("a", 1)
         );
 
         assertEquals(expected, solution.concatTwoStreams(list1, list2));
@@ -62,7 +62,7 @@ public class SolutionTest {
         List<String> list1 = List.of();
         List<Integer> list2 = List.of();
 
-        List<AbstractMap.SimpleEntry<String, Integer>> expected = List.of();
+        List<Map.Entry<String, Integer>> expected = List.of();
 
         assertEquals(expected, solution.concatTwoStreams(list1, list2));
     }
@@ -72,8 +72,8 @@ public class SolutionTest {
         List<String> list1 = List.of("x");
         List<Integer> list2 = List.of(99);
 
-        List<AbstractMap.SimpleEntry<String, Integer>> expected = List.of(
-                new AbstractMap.SimpleEntry<>("x", 99)
+        List<Map.Entry<String, Integer>> expected = List.of(
+                Map.entry("x", 99)
         );
 
         assertEquals(expected, solution.concatTwoStreams(list1, list2));
@@ -84,9 +84,9 @@ public class SolutionTest {
         List<String> list1 = List.of("a", "a");
         List<Integer> list2 = List.of(1, 1);
 
-        List<AbstractMap.SimpleEntry<String, Integer>> expected = List.of(
-                new AbstractMap.SimpleEntry<>("a", 1),
-                new AbstractMap.SimpleEntry<>("a", 1)
+        List<Map.Entry<String, Integer>> expected = List.of(
+                Map.entry("a", 1),
+                Map.entry("a", 1)
         );
 
         assertEquals(expected, solution.concatTwoStreams(list1, list2));

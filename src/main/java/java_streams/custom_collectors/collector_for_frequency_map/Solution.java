@@ -3,6 +3,7 @@ package java_streams.custom_collectors.collector_for_frequency_map;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class Solution {
@@ -13,7 +14,7 @@ public class Solution {
         return list.stream()
                 .collect(
                         Collectors.groupingBy(
-                                o -> o,
+                                Function.identity(),
                                 Collectors.collectingAndThen(
                                         Collectors.counting(),
                                         Long::intValue
